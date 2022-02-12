@@ -6,6 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class Page implements Visitable,DispositionConsumer, StyleConsumer {
-
+public abstract class Page extends NamedElement implements Visitable, DispositionConsumer, StyleConsumer {
+    public Page(String name) {
+        super(name);
+    }
 }

@@ -13,6 +13,10 @@ public class ClassementPage extends Page implements Visitable {
 
     private List<DataDisplay> dataDisplays;
 
+    public ClassementPage(String name) {
+        super(name);
+    }
+
     @Override
     public void consume(Disposition disposition) {
 

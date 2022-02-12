@@ -12,4 +12,8 @@ public abstract class NamedElement implements Visitable {
     public NamedElement(String name) {
         this.name = name;
     }
+
+    public String getName() {
+        return name;
+    }
 }
