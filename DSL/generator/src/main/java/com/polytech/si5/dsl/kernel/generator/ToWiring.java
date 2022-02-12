@@ -28,21 +28,37 @@ public class ToWiring extends Visitor<StringBuffer> {
 		context.put("pass", PASS.ONE);
 		pages = app.getPages();
 		if (pages!=null && !pages.isEmpty()) {
-			menuItems = pages.stream().map(NamedElement::getName).collect(Collectors.toList());
+			menuItems = pages.stream().map(x -> "'" + x.getName() + "'").collect(Collectors.toList());
 		}
 
 
 
 		context.put("pass", PASS.TWO);
-
 		w("<template>");
 		w("\n\t<div id=\"app\">");
-		w("\n\t\tHello");
 
 		if (pages!=null && !pages.isEmpty()) {
-
-
+			w(String.format("\n      <b-navbar toggleable=\"lg\" class=\"navbar navbar-dark bg-primary justify-content-left\">\n" +
+					"        <img class=\"mx-2\" :src=\"'https://drive.google.com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\" width=\"30\" height=\"30\" alt=\"\"/>\n" +
+					"        <b-navbar-brand href=\"#\">\n" +
+					"          %s\n" +
+					"        </b-navbar-brand>\n" +
+					"        <b-navbar-toggle target=\"nav-collapse\"></b-navbar-toggle>\n" +
+					"\n" +
+					"        <b-collapse id=\"nav-collapse\" is-nav class=\"d-lg-block\">\n" +
+					"          <b-navbar-nav>\n" +
+					"            <b-nav-item v-for=\"item in %s\" :key=\"item.message\">\n" +
+					"                <a class=\"nav-link\" href=\"#\">{{item}}</a>\n" +
+					"            </b-nav-item>\n" +
+					"          </b-navbar-nav>\n" +
+					"        </b-collapse>\n" +
+					"    </b-navbar>", app.getName(), menuItems));
 		}
+
+//		for (Page page : app.getPages()){
+//			page.accept(this);
+//		}
+
 
 
 		w("\n\t</div>");

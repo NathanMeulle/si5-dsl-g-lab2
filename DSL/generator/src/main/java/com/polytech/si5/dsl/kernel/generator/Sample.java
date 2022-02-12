@@ -12,6 +12,7 @@ public class Sample {
         App app = new App("Triathlon");
         List<Page> pages = new ArrayList<>();
         pages.add((new ClassementPage("Page de classement 1")));
+        pages.add((new ClassementPage("Page de classement 2")));
 
         app.setPages(pages);
 
