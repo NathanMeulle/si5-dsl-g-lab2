@@ -1,6 +1,12 @@
 package com.polytech.si5.dsl.g.model;
 
-public class NamedElement {
+import com.polytech.si5.dsl.g.visitor.Visitable;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public abstract class NamedElement implements Visitable {
     protected String name;
 
     public NamedElement(String name) {

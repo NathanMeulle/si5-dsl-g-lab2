@@ -1,10 +1,7 @@
 package com.polytech.si5.dsl.kernel;
 
-import com.polytech.si5.dsl.kernel.generator.Visitable;
-import com.polytech.si5.dsl.kernel.generator.Visitor;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.polytech.si5.dsl.g.visitor.Visitable;
+import com.polytech.si5.dsl.g.visitor.Visitor;
 
 public class App implements NamedElement, Visitable {
 

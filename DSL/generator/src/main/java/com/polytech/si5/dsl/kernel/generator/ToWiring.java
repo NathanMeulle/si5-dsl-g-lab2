@@ -1,5 +1,6 @@
 package com.polytech.si5.dsl.kernel.generator;
 
+import com.polytech.si5.dsl.g.visitor.Visitor;
 import com.polytech.si5.dsl.kernel.App;
 
 /**

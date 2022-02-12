@@ -7,7 +7,7 @@
   * `kernel.structural` defines the concept of `Brick`s, as `Sensor`s and `Actuator`s. It also defines the available
      signals.
   * `kernel.behavioral` implements classes for `State`s, `Action`s and `Transition`s.
-  * `kernel.generator` maps a Visitor pattern to the ArduinoML kernel, and provides an implementation for such a visitor
+  * `kernel.generator` maps a Visitor pattern to the CompetitionML kernel, and provides an implementation for such a visitor
     that generates Wiring code
   * `kernel.samples` contains sample code using the kernel.
 

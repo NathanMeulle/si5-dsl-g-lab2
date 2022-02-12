@@ -1,4 +1,4 @@
-package com.polytech.si5.dsl.kernel.generator;
+package com.polytech.si5.dsl.g.visitor;
 
 public interface Visitable {
 

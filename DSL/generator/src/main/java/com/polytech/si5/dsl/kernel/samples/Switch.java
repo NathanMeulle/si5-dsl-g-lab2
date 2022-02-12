@@ -2,9 +2,7 @@ package com.polytech.si5.dsl.kernel.samples;
 
 import com.polytech.si5.dsl.kernel.App;
 import com.polytech.si5.dsl.kernel.generator.ToWiring;
-import com.polytech.si5.dsl.kernel.generator.Visitor;
-
-import java.util.Arrays;
+import com.polytech.si5.dsl.g.visitor.Visitor;
 
 public class Switch {
 
