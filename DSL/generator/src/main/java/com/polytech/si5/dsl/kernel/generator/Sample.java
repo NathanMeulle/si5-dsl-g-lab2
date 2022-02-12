@@ -22,7 +22,7 @@ public class Sample {
         app.accept(codeGenerator);
 
         // Printing the generated code on the console
-        System.out.println(codeGenerator.getResult());
+        //System.out.println(codeGenerator.getResult());
 
     }
 }

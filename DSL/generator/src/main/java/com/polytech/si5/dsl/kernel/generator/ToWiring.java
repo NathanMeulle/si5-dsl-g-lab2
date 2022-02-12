@@ -3,6 +3,12 @@ package com.polytech.si5.dsl.kernel.generator;
 import com.polytech.si5.dsl.g.model.*;
 import com.polytech.si5.dsl.g.visitor.Visitor;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,8 +17,10 @@ import java.util.stream.Collectors;
  */
 public class ToWiring extends Visitor<StringBuffer> {
 	enum PASS {ONE, TWO}
+
 	private List<Page> pages;
 	private List<String> menuItems;
+	private final Path path = Paths.get("./ouput/src");;
 
 
 	public ToWiring() {
@@ -20,25 +28,51 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	private void w(String s) {
-		result.append(String.format("%s",s));
+		result.append(String.format("%s", s));
+	}
+	private void w(FileWriter f, String s) {
+		try {
+			f.write(s);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
+	void initProject() {
+		try {
+			Files.createDirectories(path);
+
+		} catch (IOException e) {
+			System.err.println("Failed to create directory!" + e.getMessage());
+
+		}
+	}
+	private FileWriter createFile(String fileName) throws IOException {
+		return new FileWriter(path + "/" + fileName);
+	}
 	@Override
 	public void visit(App app) {
+		initProject();
+		FileWriter file = null;
+		try {
+			file = createFile("App.vue");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		context.put("pass", PASS.ONE);
 		pages = app.getPages();
-		if (pages!=null && !pages.isEmpty()) {
+		if (pages != null && !pages.isEmpty()) {
 			menuItems = pages.stream().map(x -> "'" + x.getName() + "'").collect(Collectors.toList());
 		}
 
 
-
 		context.put("pass", PASS.TWO);
-		w("<template>");
-		w("\n\t<div id=\"app\">");
+		w(file, "<template>");
+		w(file,"\n\t<div id=\"app\">");
 
-		if (pages!=null && !pages.isEmpty()) {
-			w(String.format("\n      <b-navbar toggleable=\"lg\" class=\"navbar navbar-dark bg-primary justify-content-left\">\n" +
+		if (pages != null && !pages.isEmpty()) {
+			w(file, String.format("\n      <b-navbar toggleable=\"lg\" class=\"navbar navbar-dark bg-primary justify-content-left\">\n" +
 					"        <img class=\"mx-2\" :src=\"'https://drive.google.com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\" width=\"30\" height=\"30\" alt=\"\"/>\n" +
 					"        <b-navbar-brand href=\"#\">\n" +
 					"          %s\n" +
@@ -60,18 +94,17 @@ public class ToWiring extends Visitor<StringBuffer> {
 //		}
 
 
-
-		w("\n\t</div>");
-		w("\n</template>");
-		w("\n\n<script>");
-		w("\nexport default {");
-		w("\n\tname: 'App'");
-		w("\n}");
-		w("\n</script>");
-		w("\n}");
+		w(file,"\n\t</div>");
+		w(file,"\n</template>");
+		w(file,"\n\n<script>");
+		w(file,"\nexport default {");
+		w(file,"\n\tname: 'App'");
+		w(file,"\n}");
+		w(file,"\n</script>");
+		w(file,"\n}");
 
 		// App Style
-		w("\n\n<style>\n" +
+		w(file,"\n\n<style>\n" +
 				"#app {\n" +
 				"  font-family: Avenir, Helvetica, Arial, sans-serif;\n" +
 				"  -webkit-font-smoothing: antialiased;\n" +
@@ -87,6 +120,13 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"  height: 100%;\n" +
 				"}\n" +
 				"</style>");
+
+		try {
+			file.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
