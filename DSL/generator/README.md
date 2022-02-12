@@ -1,9 +1,5 @@
-# ArduinoML Kernel implementation for the JVM
+# Kernel implementation for the JVM
 
-  * Author: [Sebastien Mosser](mailto?mosser@i3s.unice.fr)
-  * Version: 1.0
-
-This is a quick and dirty implementation of the ArduinoML kernel, using the Java language.
 
 ## Organization
 
@@ -20,9 +16,9 @@ This is a quick and dirty implementation of the ArduinoML kernel, using the Java
 The kernel is shipped as a maven artifact. To compile the kernel into a JAR file (`target/kernel-jvm-1.0.jar`), simply
 run the following command (it assumes maven 3 installed on your computer).
 
-    mosser@azrael jvm$ mvn clean package
+    mvn clean package
 
 To install the kernel on your computer and make it available to other maven artifacts, use the following command:
 
-    mosser@azrael jvm$ mvn install
+    mvn install
 
