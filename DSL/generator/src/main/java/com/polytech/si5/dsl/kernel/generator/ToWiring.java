@@ -12,9 +12,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Quick and dirty visitor to support the generation of Wiring code
- */
 public class ToWiring extends Visitor<StringBuffer> {
 	enum PASS {ONE, TWO}
 
@@ -127,6 +124,41 @@ public class ToWiring extends Visitor<StringBuffer> {
 			e.printStackTrace();
 		}
 
+		// Test Tableau
+//		Page firstPage = app.getPages().get(0);
+//		ClassementPage classementPage = (ClassementPage) firstPage;
+//		DataDisplay dataDisplay = classementPage.getDataDisplays().get(0);
+//		Tableau tableau = (Tableau) dataDisplay;
+//		tableau.accept(this);
+	}
+
+	@Override
+	public void visit(Tableau tableau) {
+		context.put("pass", PASS.TWO);
+
+		w("\n");
+		w("<template>");
+		w("\n\t<div>");
+		w("\n\t\t<b-table striped hover :items=\"items\"></b-table>");
+		w("\n\t</div>");
+		w("\n</template>");
+
+		w("\n<script>");
+		w("\nexport default {");
+		w("\n\tdata() {");
+		w("\n\t\treturn {");
+		w("\n\t\t\titems: [");
+		w("\n\t\t\t\t{ age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },");
+		w("\n\t\t\t\t{ age: 21, first_name: 'Larsen', last_name: 'Shaw' },");
+		w("\n\t\t\t\t{ age: 89, first_name: 'Geneva', last_name: 'Wilson' },");
+		w("\n\t\t\t\t{ age: 38, first_name: 'Jami', last_name: 'Carney' }");
+		w("\n\t\t\t]");
+		w("\n\t\t}");
+		w("\n\t}");
+		w("\n}");
+		w("\n</script>");
+
+
 	}
 
 	@Override
@@ -154,9 +186,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	}
 
-	@Override
-	public void visit(Tableau tableau) {
 
-	}
 
 }

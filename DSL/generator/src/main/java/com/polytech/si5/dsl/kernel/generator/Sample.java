@@ -11,7 +11,14 @@ public class Sample {
     public static void main(String[] args) {
         App app = new App("Triathlon");
         List<Page> pages = new ArrayList<>();
-        pages.add((new ClassementPage("Page de classement 1")));
+
+        ClassementPage cp = new ClassementPage("Page de classement 1");
+        Tableau t = new Tableau("Mon tableau");
+
+        List<DataDisplay> datas = new ArrayList<>();
+        datas.add(t);
+        cp.setDataDisplays(datas);
+        pages.add(cp);
         pages.add((new ClassementPage("Page de classement 2")));
 
         app.setPages(pages);
