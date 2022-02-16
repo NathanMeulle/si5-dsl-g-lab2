@@ -4,6 +4,7 @@ import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLBaseListener;
 import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLParser;
 import com.polytech.si5.dsl.g.model.App;
 import com.polytech.si5.dsl.g.model.DisciplineType;
+import com.polytech.si5.dsl.g.model.Disposition;
 
 
 public class ModelBuilder extends CompetitionMLBaseListener {
@@ -41,9 +42,30 @@ public class ModelBuilder extends CompetitionMLBaseListener {
         theApp.setDisciplineType(DisciplineType.get(ctx.type.getText()));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterPadding(CompetitionMLParser.PaddingContext ctx) {
+        int value = Integer.parseInt(ctx.value.getText());
+        Disposition disposition = new Disposition();
+        disposition.setPadding(value);
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitPadding(CompetitionMLParser.PaddingContext ctx) {
+
+    }
+
     @Override
     public void exitRoot(CompetitionMLParser.RootContext ctx) {
         this.built = true;
     }
+
+
 }
 

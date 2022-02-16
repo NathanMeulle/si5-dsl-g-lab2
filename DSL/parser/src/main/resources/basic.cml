@@ -1,1 +1,5 @@
 discipline "triathlon" championnat
+
+classement "nom"
+    disposition padding 20 px
+    tableau "helloworld" top 5 [ ok | peut | etre | hello | world ]
