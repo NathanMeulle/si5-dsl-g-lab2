@@ -6,14 +6,14 @@ grammar CompetitionML;
  ******************/
 
 root            :   discipline EOF;
-discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE_TYPE;
+discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE;
 
 /*****************
  ** Lexer rules **
  *****************/
 
-IDENTIFIER      :   (LETTER)+ | QUOTE (LETTER|' ')+ QUOTE;
-DISCIPLINE_TYPE :   'championnat' | 'tournoi';
+IDENTIFIER      :  QUOTE WORD+ QUOTE ;
+DISCIPLINE :   'championnat' | 'tournoi';
 
 /*************
  ** Helpers **
@@ -21,7 +21,7 @@ DISCIPLINE_TYPE :   'championnat' | 'tournoi';
 
 fragment LOWERCASE  : [a-z];                                 // abstract rule, does not really exists
 fragment UPPERCASE  : [A-Z];
-fragment LETTER     : LOWERCASE | UPPERCASE;
+fragment WORD     : LOWERCASE (LOWERCASE|UPPERCASE)+;
 fragment QUOTE      : '"';
 NEWLINE             : ('\r'? '\n' | '\r')+      -> skip;
 WS                  : ((' ' | '\t')+)           -> skip;     // who cares about whitespaces?
