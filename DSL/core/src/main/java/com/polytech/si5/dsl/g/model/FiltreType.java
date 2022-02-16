@@ -7,7 +7,7 @@ public enum FiltreType {
 
     public static FiltreType get(String name) {
         for (FiltreType current :FiltreType.values()) {
-            if (current.name().equals(name)) return current;
+            if (current.name().equals(name.toUpperCase())) return current;
         }
         return null;
     }
