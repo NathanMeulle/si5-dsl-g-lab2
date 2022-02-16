@@ -1,6 +1,6 @@
 <template>
   <div class="editor">
-    <MonacoEditor id="monaco"  v-model="code"/>
+    <MonacoEditor id="monaco"  v-model="code" :options="options"/>
     <v-btn @click="render" id="render" elevation="2">
       Render
     </v-btn>
@@ -17,7 +17,10 @@ export default {
 
   data() {
     return {
-      code: ''
+      code: '',
+      options:{
+        theme: 'vs'
+      }
     }
   },
 

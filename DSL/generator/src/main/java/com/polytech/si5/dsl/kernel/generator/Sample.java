@@ -10,6 +10,7 @@ import java.util.List;
 public class Sample {
     public static void main(String[] args) {
         App app = new App("Triathlon");
+        app.setColorNavBar("#00ffdb");
         List<Page> pages = new ArrayList<>();
 
         ClassementPage cp = new ClassementPage("Page de classement 1");
