@@ -75,7 +75,7 @@ public class ModelBuilder extends CompetitionMLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterClassement(CompetitionMLParser.ClassementContext ctx) {
-        this.classementPage = new ClassementPage(ctx.name.getText());
+        this.classementPage = new ClassementPage(ctx.name.getText().replace("\"",""));
         this.theApp.getPages().add(classementPage);
 
     }
