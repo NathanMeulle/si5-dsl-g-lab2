@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
     <MonacoEditor id="monaco"  v-model="code"/>
-    <v-btn id="render" elevation="2">
+    <v-btn @click="render" id="render" elevation="2">
       Render
     </v-btn>
   </div>
@@ -18,6 +18,12 @@ export default {
   data() {
     return {
       code: ''
+    }
+  },
+
+  methods: {
+    render(){
+      console.log(this.code)
     }
   }
 }
