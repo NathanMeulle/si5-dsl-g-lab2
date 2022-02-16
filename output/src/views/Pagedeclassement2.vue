@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <b-container>
     <h3>Page de classement 2</h3>
-    
-  </div>
+      </b-container>
 </template><script>
-
 export default {
-  name: 'Pagedeclassement2',
+  name: 'Classement',
+  components: {
+  }
 }
 </script>

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public abstract class DataDisplay extends NamedElement implements Visitable,DispositionConsumer {
     private String dataSource;
+    private String htmlComponent;
 
     public DataDisplay(String name) {
         super(name);

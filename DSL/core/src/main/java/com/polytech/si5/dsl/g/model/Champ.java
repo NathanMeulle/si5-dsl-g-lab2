@@ -9,9 +9,24 @@ import lombok.Setter;
 @Setter
 public class Champ extends NamedElement implements Visitable, StyleConsumer {
 
+    private boolean hide;
+    private boolean inDetail;
     public Champ(String name) {
         super(name);
+        this.hide = false;
+        this.inDetail = false;
     }
+    public Champ(String name, boolean hide) {
+        super(name);
+        this.hide = hide;
+        this.inDetail = false;
+    }
+    public Champ(String name, boolean hide, boolean inDetail) {
+        super(name);
+        this.hide = hide;
+        this.inDetail = inDetail;
+    }
+
 
     @Override
     public void consume(Style style) {

@@ -1,11 +1,14 @@
 <template>
-  <div>
+  <b-container>
     <h3>Page de classement 1</h3>
-    
-  </div>
+    <Tableau />
+  </b-container>
 </template><script>
-
+import Tableau from '../components/Tableau.vue'
 export default {
-  name: 'Pagedeclassement1',
+  name: 'Classement',
+  components: {
+    Tableau
+  }
 }
 </script>

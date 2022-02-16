@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ToWiring extends Visitor<StringBuffer> {
@@ -39,8 +42,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 		createDirectory("router");
 		createDirectory("views");
 		createDirectory("components");
-
+		createDirectory("external");
 	}
+
 	private void createDirectory(String name){
 		try {
 			Path p = Paths.get("./output/src/" + name);;
@@ -49,8 +53,32 @@ public class ToWiring extends Visitor<StringBuffer> {
 			System.err.println("Failed to create directory!" + e.getMessage());
 		}
 	}
+
 	private FileWriter createFile(String fileName) throws IOException {
 		return new FileWriter(path + "/" + fileName);
+	}
+
+	private void createExternalRessource(String functionName){
+		FileWriter file = null;
+		try {
+			file = createFile("external/getData_" + functionName + ".js");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		w(file, String.format("function %s(){\n" +
+				"        return  []\n" +
+				"}", functionName));
+
+		w(file, String.format("module.exports = {\n" +
+				"    %s,\n" +
+				"}", functionName));
+
+		try {
+			file.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void createRouter(List<String> menuItems) {
@@ -178,42 +206,25 @@ public class ToWiring extends Visitor<StringBuffer> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		// Test Tableau
-//		Page firstPage = app.getPages().get(0);
-//		ClassementPage classementPage = (ClassementPage) firstPage;
-//		DataDisplay dataDisplay = classementPage.getDataDisplays().get(0);
-//		Tableau tableau = (Tableau) dataDisplay;
-//		tableau.accept(this);
 	}
 
 	@Override
 	public void visit(Tableau tableau) {
-		context.put("pass", PASS.TWO);
+		FileWriter file = null;
+		try {
+			file = createFile("components/Tableau.vue");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		w("\n");
-		w("<template>");
-		w("\n\t<div>");
-		w("\n\t\t<b-table striped hover :items=\"items\"></b-table>");
-		w("\n\t</div>");
-		w("\n</template>");
+		ToWiringTableau wt = new ToWiringTableau(tableau);
+		w(file, wt.generateHTML());
 
-		w("\n<script>");
-		w("\nexport default {");
-		w("\n\tdata() {");
-		w("\n\t\treturn {");
-		w("\n\t\t\titems: [");
-		w("\n\t\t\t\t{ age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },");
-		w("\n\t\t\t\t{ age: 21, first_name: 'Larsen', last_name: 'Shaw' },");
-		w("\n\t\t\t\t{ age: 89, first_name: 'Geneva', last_name: 'Wilson' },");
-		w("\n\t\t\t\t{ age: 38, first_name: 'Jami', last_name: 'Carney' }");
-		w("\n\t\t\t]");
-		w("\n\t\t}");
-		w("\n\t}");
-		w("\n}");
-		w("\n</script>");
-
-
+		try {
+			file.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -229,17 +240,32 @@ public class ToWiring extends Visitor<StringBuffer> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		List<DataDisplay> dataDisplays = classementPage.getDataDisplays();
+		StringBuilder dataDisplaysHtml = new StringBuilder();
+		if (dataDisplays != null){
+			for (DataDisplay d : dataDisplays){
+				dataDisplaysHtml.append(d.getHtmlComponent()).append("\n");
+				d.accept(this);
+				createExternalRessource(d.getDataSource());
+			}
+		}
+		boolean hasTableau = dataDisplaysHtml.toString().contains("Tableau");
+
+
 		w(file, String.format("<template>\n" +
-				"  <div>\n" +
+				"  <b-container>\n" +
 				"    <h3>%s</h3>\n" +
-				"    \n" +
-				"  </div>\n" +
-				"</template>", classementPage.getName()));
+				"    %s" +
+				"  </b-container>\n" +
+				"</template>", classementPage.getName(), dataDisplaysHtml));
 
 		w(file, String.format("<script>\n" +
-				"\n" +
+				(hasTableau? "import Tableau from '../components/Tableau.vue'\n":"") +
 				"export default {\n" +
-				"  name: '%s',\n" +
+				"  name: 'Classement',\n" +
+				"  components: {\n" +
+				(hasTableau? "    Tableau\n":"") +
+				"  }\n" +
 				"}\n" +
 				"</script>", classementPage.getName().replaceAll(" ", "")));
 

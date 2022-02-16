@@ -13,6 +13,7 @@ public class Tableau extends DataDisplay implements Visitable {
     private int size;
     private List<Champ> champs;
     private List<Filtre> filtres;
+    private final String htmlComponent = "<Tableau />";
 
     public Tableau(String name) {
         super(name);
