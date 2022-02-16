@@ -14,6 +14,8 @@ public class App extends NamedElement implements Visitable {
     private DisciplineType disciplineType;
     private List<Page> pages;
     private String colorNavBar;
+    private String fontFamily;
+    private String genericFont;
 
     public App(String name) {
         super(name);

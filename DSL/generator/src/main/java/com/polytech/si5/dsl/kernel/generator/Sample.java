@@ -11,6 +11,8 @@ public class Sample {
     public static void main(String[] args) {
         App app = new App("Triathlon");
         app.setColorNavBar("#00ffdb");
+        app.setFontFamily("Times");
+        app.setGenericFont("sans-serif");
         List<Page> pages = new ArrayList<>();
 
         ClassementPage cp = new ClassementPage("Page de classement 1");
