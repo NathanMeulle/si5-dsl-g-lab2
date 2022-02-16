@@ -178,30 +178,11 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"</script>");
 
 		// App Style
-		w(file,"\n\n<style>\n" +
-				"#app {\n" +
-				"  font-family: Avenir, Helvetica, Arial, sans-serif;\n" +
-				"  -webkit-font-smoothing: antialiased;\n" +
-				"  -moz-osx-font-smoothing: grayscale;\n" +
-				"  text-align: center;\n" +
-				"  color: #2c3e50;\n" +
-				"}\n" +
-				"html {\n" +
-				"  min-height: 100%;\n" +
-				"  position: relative;\n" +
-				"}\n" +
-				"body {\n" +
-				"  height: 100%;\n" +
-				"}\n" +
-				"#nav a {\n" +
-						"  font-weight: bold;\n" +
-						"  color: #000;\n" +
-						"}\n" +
-						"\n" +
-						"#nav a.router-link-exact-active {\n" +
-						"  color: #fff;\n" +
-						"}\n" +
-				"</style>");
+		w(file, "\n\n<style>\n" + "#app {\n" + "  font-family: "+app.getFontFamily()+", "+app.getGenericFont()+";\n" + "  -webkit" +
+				"-font-smoothing: antialiased;\n" + "  -moz-osx-font-smoothing: grayscale;\n" + "  text-align: center;" +
+				"\n" + "  color: #2c3e50;\n" + "}\n" + "html {\n" + "  min-height: 100%;\n" + "  position: relative;" +
+				"\n" + "}\n" + "body {\n" + "  height: 100%;\n" + "}\n" + "#nav a {\n" + "  font-weight: bold;\n" + " " +
+				" color: #000;\n" + "}\n" + "\n" + "#nav a.router-link-exact-active {\n" + "  color: #fff;\n" + "}\n" + "</style>");
 
 		try {
 			file.close();
