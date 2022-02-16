@@ -7,6 +7,7 @@ var data = require('../external/getData_getDataTableau1');
   export default {
   mounted() {
     this.items =  data.getDataTableau1();
+    console.log()
   },    data() {
       return {
         items: []

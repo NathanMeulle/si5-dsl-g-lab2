@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Disposition implements Visitable {
+    private int padding;
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);

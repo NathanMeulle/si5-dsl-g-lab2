@@ -11,6 +11,7 @@ import java.util.List;
 public class Sample {
     public static void main(String[] args) {
         App app = new App("Triathlon");
+        app.setColorNavBar("#aa3333");
         List<Page> pages = new ArrayList<>();
 
         ClassementPage cp1 = new ClassementPage("Page de classement 1");

@@ -6,7 +6,6 @@
 </template><script>
 import Tableau from '../components/Tableau.vue'
 export default {
-  name: 'Classement',
   components: {
     Tableau
   }

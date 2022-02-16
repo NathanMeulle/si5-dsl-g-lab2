@@ -3,7 +3,6 @@ package com.polytech.si5.dsl.kernel.generator;
 import com.polytech.si5.dsl.g.model.*;
 import com.polytech.si5.dsl.g.visitor.Visitor;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -156,7 +155,10 @@ public class ToWiring extends Visitor<StringBuffer> {
 		w(file, "<template>");
 		w(file,"\n\t<div id=\"app\">");
 		if (pages != null && !pages.isEmpty()) {
-			w(file, String.format("\n   <Navbar :logoUrl=\"'https://drive.google.com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\" :NavbarTitle=\"'%s'\" :MenuItems=\"%s\"/>\n", app.getName(), menuItems.stream().map(x -> "'" + x + "'").collect(Collectors.toList())));
+			w(file, String.format("\n   <Navbar :logoUrl=\"'https://drive.google" +
+							".com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\" :NavbarTitle=\"'%s'\" " +
+							":MenuItems=\"%s\" :colorNavBar=\"'%s'\" />\n", app.getName(),
+					menuItems.stream().map(x -> "'" + x + "'").collect(Collectors.toList()), app.getColorNavBar()));
 		}
 		w(file, "    <div class=\"container\">\n" +
 				"      <router-view />\n" +
@@ -291,7 +293,4 @@ public class ToWiring extends Visitor<StringBuffer> {
 	public void visit(Style style) {
 
 	}
-
-
-
 }

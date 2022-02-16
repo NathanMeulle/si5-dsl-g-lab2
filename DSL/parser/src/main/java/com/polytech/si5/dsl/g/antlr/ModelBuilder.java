@@ -2,8 +2,9 @@ package com.polytech.si5.dsl.g.antlr;
 
 import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLBaseListener;
 import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLParser;
-import com.polytech.si5.dsl.g.model.App;
-import com.polytech.si5.dsl.g.model.DisciplineType;
+import com.polytech.si5.dsl.g.model.*;
+
+import java.util.ArrayList;
 
 
 public class ModelBuilder extends CompetitionMLBaseListener {
@@ -41,9 +42,67 @@ public class ModelBuilder extends CompetitionMLBaseListener {
         theApp.setDisciplineType(DisciplineType.get(ctx.type.getText()));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterPadding(CompetitionMLParser.PaddingContext ctx) {
+        int value = Integer.parseInt(ctx.value.getText());
+        Disposition disposition = new Disposition();
+        disposition.setPadding(value);
+    }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterTableau(CompetitionMLParser.TableauContext ctx) { }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterColumns(CompetitionMLParser.ColumnsContext ctx) {
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitTableau(CompetitionMLParser.TableauContext ctx) {
+        Tableau tableau = new Tableau(ctx.name.getText());
+        tableau.setChamps(new ArrayList<>());
+        for(CompetitionMLParser.ColumnContext columnsContext: ctx.tableau_def().columns().column()){
+            Champ champ = new Champ(columnsContext.name.getText());
+            tableau.getChamps().add(champ);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitPadding(CompetitionMLParser.PaddingContext ctx) {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitColumns(CompetitionMLParser.ColumnsContext ctx) { }
+
     @Override
     public void exitRoot(CompetitionMLParser.RootContext ctx) {
         this.built = true;
     }
+
+
 }
 
