@@ -1,20 +1,38 @@
 <template>
 	<div id="app">
-   <Navbar :logoUrl="'https://drive.google.com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'" :NavbarTitle="'Triathlon'" :MenuItems="['Page de classement 1', 'Page de classement 2']" :colorNavBar="'#aa3333'" />
+    <Navbar :logoUrl="'https://drive.google.com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'"
+      :NavbarTitle="'Triathlon'"
+      :MenuItems="['Page de classement 1', 'Page de classement 2']"
+      :colorNavBar="'#aa3333'"
+      @swapComponent="loadComponent"
+    />
     <div class="container">
-      <router-view />
+      <div :is="currentComponent"></div>
     </div>
   </div>
 </template>
 <script>
 import Navbar from './components/Navbar.vue'
-
+import Pagedeclassement1 from './views/Pagedeclassement1.vue'
+import Pagedeclassement2 from './views/Pagedeclassement2.vue'
 export default {
   name: 'App',
   components: {
-    Navbar,
+    Navbar, Pagedeclassement1, Pagedeclassement2
   },
+  data() {
+    return {
+      currentComponent: null,
+    }
+  },
+  methods: {
+    loadComponent: function(component)
+    {
+        this.currentComponent = component
+    }
+  }
 }
+
 </script>
 
 <style>

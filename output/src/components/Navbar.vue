@@ -7,7 +7,7 @@
     <b-collapse id="nav-collapse" is-nav class="d-lg-block">
       <b-navbar-nav>
         <b-nav-item v-for="item in MenuItems" :key="item.message">
-          <router-link :to="item.replaceAll(' ', '')">{{item}}</router-link>
+          <b-nav-item @click="swapComponent(item.replaceAll(' ', ''))">{{item}}</b-nav-item>
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
@@ -28,6 +28,12 @@ export default {
       return {
         '--navbar-color': this.colorNavBar,
       }
+    },
+  },
+  methods: {
+    swapComponent: function(component)
+    {
+      this.$emit('swapComponent', component)
     }
   }
 }

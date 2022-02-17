@@ -38,7 +38,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	void initProject() {
-		createDirectory("router");
 		createDirectory("views");
 		createDirectory("components");
 		createDirectory("external");
@@ -64,10 +63,16 @@ public class ToWiring extends Visitor<StringBuffer> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		// mock Data to display the array, will be replaced by []
+		String mockData = "[{ role: 'PDG', age: 23, first_name: 'Thibaut', last_name: 'esteve' },\n" +
+				"        { role: 'CP', age: 22, first_name: 'David', last_name: 'lebrisse' },\n" +
+				"        { role: 'BA', age: 22, first_name: 'Nathan', last_name: 'M' },\n" +
+				"        { role: 'Dev', age: 22, first_name: 'MArtin', last_name: 'Bruel' },\n" +
+				"        { role: 'LT', age: 22, first_name: 'Kevin', last_name: 'Ushaka' }]";
 
 		w(file, String.format("function %s(){\n" +
-				"        return  []\n" +
-				"}", functionName));
+				"        return  %s\n" +
+				"}", functionName, mockData));
 
 		w(file, String.format("module.exports = {\n" +
 				"    %s,\n" +
@@ -80,57 +85,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 	}
 
-	private void createRouter(List<String> menuItems) {
-		FileWriter file = null;
-		try {
-			file = createFile("router/index.js");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-		// Add Imports
-		w(file, "import Vue from 'vue'\n" +
-				"import VueRouter from 'vue-router'\n");
-		for (String menuItem : menuItems) {
-			String tmp = menuItem.replaceAll(" ","");
-			w(file, String.format("import %s from '../views/%s.vue'\n", tmp, tmp));
-		}
-		w(file, "Vue.use(VueRouter)");
-
-		// Create Routes
-		String tmp = menuItems.get(0).replaceAll(" ","");
-		w(file,String.format("\nconst routes = [\n" +
-				"  {\n" +
-				"    path: '/',\n" +
-				"    name: '%s',\n" +
-				"    component: %s\n" +
-				"  },", tmp, tmp));
-
-		for (String menuItem : menuItems){
-			tmp = menuItem.replaceAll(" ","");
-			w(file, String.format("  {\n" +
-					"    path: '/%s',\n" +
-					"    name: '%s',\n" +
-					"    component: %s\n" +
-					"  },", tmp, tmp, tmp));
-		}
-
-		w(file, "\n]\n" +
-				"\n" +
-				"const router = new VueRouter({\n" +
-				"  mode: 'history',\n" +
-				"  base: process.env.BASE_URL,\n" +
-				"  routes\n" +
-				"})\n" +
-				"\n" +
-				"export default router");
-		try {
-			file.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
 	@Override
 	public void visit(App app) {
 		initProject();
@@ -145,7 +100,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 		pages = app.getPages();
 		if (pages != null && !pages.isEmpty()) {
 			menuItems = pages.stream().map(NamedElement::getName).collect(Collectors.toList());
-			createRouter(menuItems);
 			for (Page page : app.getPages()){
 				page.accept(this);
 			}
@@ -155,28 +109,45 @@ public class ToWiring extends Visitor<StringBuffer> {
 		w(file, "<template>");
 		w(file,"\n\t<div id=\"app\">");
 		if (pages != null && !pages.isEmpty()) {
-			w(file, String.format("\n   <Navbar :logoUrl=\"'https://drive.google" +
-							".com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\" :NavbarTitle=\"'%s'\" " +
-							":MenuItems=\"%s\" :colorNavBar=\"'%s'\" />\n", app.getName(),
+			w(file, String.format("\n    <Navbar :logoUrl=\"'https://drive.google" +
+							".com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\"\n" +
+							"      :NavbarTitle=\"'%s'\"\n" +
+							"      :MenuItems=\"%s\"\n" +
+							"      :colorNavBar=\"'%s'\"\n" +
+							"      @swapComponent=\"loadComponent\"\n" +
+							"    />\n", app.getName(),
 					menuItems.stream().map(x -> "'" + x + "'").collect(Collectors.toList()), app.getColorNavBar()));
 		}
 		w(file, "    <div class=\"container\">\n" +
-				"      <router-view />\n" +
+				"      <div :is=\"currentComponent\"></div>\n" +
 				"    </div>");
 
-		w(file, "\n  </div>\n" +
+		String menuImports = menuItems.stream().map(x -> "\nimport " + x.replaceAll(" ", "") + " from './views/" + x.replaceAll(" ", "") + ".vue'" ).collect(Collectors.joining());
+		w(file, String.format("\n  </div>\n" +
 				"</template>\n" +
 				"<script>\n" +
-				"import Navbar from './components/Navbar.vue'\n" +
-				"\n" +
+				"import Navbar from './components/Navbar.vue'" +
+				"%s\n" +
 				"export default {\n" +
 				"  name: 'App',\n" +
 				"  components: {\n" +
-				"    Navbar,\n" +
-				"  },\n" +
-				"}\n" +
-				"</script>");
+				"    Navbar, %s\n" +
+				"  },\n",
+				menuImports, menuItems.stream().map(x -> x.replaceAll(" ", "")).collect(Collectors.joining(", "))));
 
+		w(file, "  data() {\n" +
+				"    return {\n" +
+				"      currentComponent: null,\n" +
+				"    }\n" +
+				"  },\n" +
+				"  methods: {\n" +
+				"    loadComponent: function(component)\n" +
+				"    {\n" +
+				"        this.currentComponent = component\n" +
+				"    }\n" +
+				"  }");
+		w(file, "\n}\n\n" +
+				"</script>");
 		// App Style
 		w(file, "\n\n<style>\n" + "#app {\n" + "  font-family: "+app.getFontFamily()+", "+app.getGenericFont()+";\n" + "  -webkit" +
 				"-font-smoothing: antialiased;\n" + "  -moz-osx-font-smoothing: grayscale;\n" + "  text-align: center;" +
