@@ -15,6 +15,7 @@ pnpm-debug.log*
 
 # Editor directories and files
 .idea
+.iml
 .vscode
 *.suo
 *.ntvs*
@@ -25,3 +26,7 @@ pnpm-debug.log*
 # IDE
 IDE/**/node_modules
 IDE/**/package-lock.json
+
+# DSL
+DSL/.idea
+

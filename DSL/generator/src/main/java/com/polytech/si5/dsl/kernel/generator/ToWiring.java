@@ -19,7 +19,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	private List<Page> pages;
 	private List<String> menuItems;
-	private final Path path = Paths.get("./output/src");
+	private final Path path = Paths.get("../output/src");
 
 
 	public ToWiring() {
@@ -45,7 +45,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	private void createDirectory(String name){
 		try {
-			Path p = Paths.get("./output/src/" + name);;
+			Path p = Paths.get("../output/src/" + name);;
 			Files.createDirectories(p);
 		} catch (IOException e) {
 			System.err.println("Failed to create directory!" + e.getMessage());
