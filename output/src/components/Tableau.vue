@@ -1,6 +1,7 @@
 <template>
   <div>
-    <b-table striped hover :items="items"></b-table>
+    <h4 class="text-left">helloworld</h4>
+    <b-table striped hover :items="items" :fields="fields" :per-page="0" show-empty>></b-table>
   </div>
 </template><script>
 var data = require('../external/getData_getData');
@@ -9,7 +10,8 @@ var data = require('../external/getData_getData');
     this.items =  data.getData();
   },    data() {
       return {
-        items: []
+        items: [],
+        fields: ['Equipe', 'Prenom', 'Nom', 'Nationalité', 'Score'],
       }
     }
   }

@@ -65,11 +65,8 @@ public class ToWiring extends Visitor<StringBuffer> {
 			e.printStackTrace();
 		}
 		// mock Data to display the array, will be replaced by []
-		String mockData = "[{ role: 'PDG', age: 23, first_name: 'Thibaut', last_name: 'esteve' },\n" +
-				"        { role: 'CP', age: 22, first_name: 'David', last_name: 'lebrisse' },\n" +
-				"        { role: 'BA', age: 22, first_name: 'Nathan', last_name: 'M' },\n" +
-				"        { role: 'Dev', age: 22, first_name: 'MArtin', last_name: 'Bruel' },\n" +
-				"        { role: 'LT', age: 22, first_name: 'Kevin', last_name: 'Ushaka' }]";
+
+		String mockData = "[]";
 
 		w(file, String.format("function %s(){\n" +
 				"        return  %s\n" +
