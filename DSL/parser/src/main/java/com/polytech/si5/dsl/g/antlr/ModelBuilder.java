@@ -88,6 +88,7 @@ public class ModelBuilder extends CompetitionMLBaseListener {
      */
     @Override public void exitTableau(CompetitionMLParser.TableauContext ctx) {
         Tableau tableau = new Tableau(ctx.name.getText());
+        tableau.setSize(Integer.parseInt(ctx.max.getText()));
         tableau.setChamps(new ArrayList<>());
         tableau.setFiltres(new ArrayList<>());
         tableau.setChamps(new ArrayList<>());
