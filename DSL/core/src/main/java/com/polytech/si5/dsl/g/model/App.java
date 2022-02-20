@@ -17,6 +17,7 @@ public class App extends NamedElement implements Visitable {
     private String colorNavBar;
     private String fontFamily;
     private String genericFont;
+    private String urlLogo;
 
     public App(String name) {
         super(name);

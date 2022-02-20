@@ -104,16 +104,18 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 
 		context.put("pass", PASS.TWO);
+		String logo = app.getUrlLogo()!=null?" :logoUrl=\""+app.getUrlLogo() +"\"\n":"";
+
 		w(file, "<template>");
 		w(file,"\n\t<div id=\"app\">");
 		if (pages != null && !pages.isEmpty()) {
-			w(file, String.format("\n    <Navbar :logoUrl=\"'https://drive.google" +
-							".com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\"\n" +
+			w(file, String.format("\n    <Navbar" + logo +
 							"      :NavbarTitle=\"'%s'\"\n" +
 							"      :MenuItems=\"%s\"\n" +
 							"      :colorNavBar=\"'%s'\"\n" +
 							"      @swapComponent=\"loadComponent\"\n" +
-							"    />\n", app.getName().replaceAll("\"", ""),
+							"    />\n",
+					app.getName().replaceAll("\"", ""),
 					menuItems.stream().map(x -> "'" + x + "'").collect(Collectors.toList()), app.getColorNavBar()));
 		}
 		w(file, "    <div class=\"container\">\n" +
@@ -133,9 +135,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"  },\n",
 				menuImports, menuItems.stream().map(x -> x.replaceAll(" ", "")).collect(Collectors.joining(", "))));
 
-		w(file, "  data() {\n" +
+		w(file,  String.format("  data() {\n" +
 				"    return {\n" +
-				"      currentComponent: null,\n" +
+				"      currentComponent: %s,\n" +
 				"    }\n" +
 				"  },\n" +
 				"  methods: {\n" +
@@ -143,7 +145,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"    {\n" +
 				"        this.currentComponent = component\n" +
 				"    }\n" +
-				"  }");
+				"  }", menuItems.get(0)));
 		w(file, "\n}\n\n" +
 				"</script>");
 		// App Style
