@@ -32,7 +32,7 @@ java 11
 
 ## Compilation
 
-Adapter les fichiers [IDE/front/.env](IDE/front/.env) et [IDE/back/.env](IDE/back/.env)
+Adapter les fichiers [IDE/front/.env](IDE/front/.env) et [IDE/back/.env](IDE/back/.env)  
 ```./build```
 
 ## Exécution
