@@ -31,10 +31,9 @@ public class ToWiringTableau {
         res.append(String.format("<template>\n" +
                 "  <div>\n" +
                 "    <h4 class=\"text-left\">%s</h4>\n" +
-                "    <b-table striped hover :items=\"items\" :fields=\"fields\" :per-page=\"%s\" show-empty>></b-table>\n" +
+                "    <b-table striped hover :items=\"items\" :fields=\"fields\" :per-page=\"%s\" show-empty></b-table>\n" +
                 "  </div>\n" +
                 "</template>", this.name, this.size));
-
 
 
         res.append(String.format("<script>\n" +
@@ -46,13 +45,25 @@ public class ToWiringTableau {
                 "    data() {\n" +
                 "      return {\n" +
                 "        items: [],\n" +
-                "        fields: %s,\n" +
+                "        fields: [\n%s        ],\n" +
                 "      }\n" +
                 "    }\n" +
                 "  }\n" +
-                "</script>",this.dataSource, this.dataSource, this.champs.stream().map(x -> "'" + x.getName() + "'").collect(Collectors.toList())));
+                "</script>",this.dataSource, this.dataSource, generateFields()));
 
 
+        return res.toString();
+    }
+
+    private String generateFields(){
+        StringBuilder res = new StringBuilder();
+        for (Champ champ : this.champs){
+            res.append("        {\n          key:'").append(champ.getName()).append("'\n");
+            if (champ.getStyle() != null && champ.getStyle().isBold()){
+                res.append("          class:\"font-weight-bold\"\n");
+            }
+            res.append("        },\n");
+        }
         return res.toString();
     }
 }
