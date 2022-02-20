@@ -25,13 +25,14 @@ Toutes les commandes sont à réaliser à la racine du projet
 
 ## Prérequis
 
-docker
-npm
-maven
-java 11
+docker  
+npm  
+maven  
+java 11  
 
 ## Compilation
 
+Adapter les fichiers ```.env``` dans IDE/back et IDE/front
 ```./build```
 
 ## Exécution
