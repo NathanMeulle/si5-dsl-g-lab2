@@ -3,10 +3,10 @@
     <b-table striped hover :items="items"></b-table>
   </div>
 </template><script>
-var data = require('../external/getData_getDataTableau1');
+var data = require('../external/getData_getData');
   export default {
   mounted() {
-    this.items =  data.getDataTableau1();
+    this.items =  data.getData();
   },    data() {
       return {
         items: []

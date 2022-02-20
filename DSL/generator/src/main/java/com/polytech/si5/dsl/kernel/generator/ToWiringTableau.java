@@ -15,7 +15,7 @@ public class ToWiringTableau {
 
     public ToWiringTableau(Tableau tableau) {
         this.name = tableau.getName();
-        this.dataSource = tableau.getDataSource();
+        this.dataSource = tableau.getDataSource()==null?"getData":tableau.getDataSource();
         this.champs = tableau.getChamps();
         this.filtres =  tableau.getFiltres();
     }

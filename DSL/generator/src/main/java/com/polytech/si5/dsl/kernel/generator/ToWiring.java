@@ -58,6 +58,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	private void createExternalRessource(String functionName){
 		FileWriter file = null;
+		if (functionName == null) functionName = "getData";
 		try {
 			file = createFile("external/getData_" + functionName + ".js");
 		} catch (IOException e) {
@@ -115,7 +116,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 							"      :MenuItems=\"%s\"\n" +
 							"      :colorNavBar=\"'%s'\"\n" +
 							"      @swapComponent=\"loadComponent\"\n" +
-							"    />\n", app.getName(),
+							"    />\n", app.getName().replaceAll("\"", ""),
 					menuItems.stream().map(x -> "'" + x + "'").collect(Collectors.toList()), app.getColorNavBar()));
 		}
 		w(file, "    <div class=\"container\">\n" +

@@ -1,9 +1,9 @@
 <template>
 	<div id="app">
     <Navbar :logoUrl="'https://drive.google.com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'"
-      :NavbarTitle="'Triathlon'"
-      :MenuItems="['Page de classement 1', 'Page de classement 2']"
-      :colorNavBar="'#aa3333'"
+      :NavbarTitle="'triathlon'"
+      :MenuItems="['classement']"
+      :colorNavBar="'null'"
       @swapComponent="loadComponent"
     />
     <div class="container">
@@ -13,12 +13,11 @@
 </template>
 <script>
 import Navbar from './components/Navbar.vue'
-import Pagedeclassement1 from './views/Pagedeclassement1.vue'
-import Pagedeclassement2 from './views/Pagedeclassement2.vue'
+import classement from './views/classement.vue'
 export default {
   name: 'App',
   components: {
-    Navbar, Pagedeclassement1, Pagedeclassement2
+    Navbar, classement
   },
   data() {
     return {
@@ -37,7 +36,7 @@ export default {
 
 <style>
 #app {
-  font-family: Times, sans-serif;
+  font-family: null, null;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

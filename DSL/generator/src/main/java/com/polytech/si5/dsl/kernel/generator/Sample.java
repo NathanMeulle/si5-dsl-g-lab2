@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Sample {
     public static void main(String[] args) {
-        App app = new App("Triathlon");
+        App app = new App("Triathlon2");
         app.setColorNavBar("#aa3333");
         app.setFontFamily("Times");
         app.setGenericFont("sans-serif");
