@@ -1,1 +1,0 @@
-java -classpath DSL/generator/target/classes:DSL/core/target/core-1.0-SNAPSHOT.jar com.polytech.si5.dsl.kernel.generator.Sample
