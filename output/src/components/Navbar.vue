@@ -1,5 +1,5 @@
 <template>
-  <b-navbar :style="cssProps" id="nav" toggleable="lg" class="navbar navbar-dark justify-content-left">
+  <b-navbar :style="cssProps" id="nav" toggleable="sm" class="navbar navbar-dark justify-content-left">
     <Logo  v-if="logoUrl!=undefined" :imgSrc="logoUrl" class=""/>
     <b-navbar-brand href="#"><h2>{{NavbarTitle}}</h2></b-navbar-brand>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>

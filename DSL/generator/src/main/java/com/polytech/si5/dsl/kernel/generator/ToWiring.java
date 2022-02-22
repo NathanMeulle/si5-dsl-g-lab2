@@ -3,15 +3,13 @@ package com.polytech.si5.dsl.kernel.generator;
 import com.polytech.si5.dsl.g.model.*;
 import com.polytech.si5.dsl.g.visitor.Visitor;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ToWiring extends Visitor<StringBuffer> {
@@ -56,17 +54,36 @@ public class ToWiring extends Visitor<StringBuffer> {
 		return new FileWriter(path + "/" + fileName);
 	}
 
-	private void createExternalRessource(String functionName){
+	private String generateRandomDataArray(DataDisplay d){
+		List<String> lorem = Arrays.asList("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed commodo rutrum posuere. Sed molestie semper nulla quis molestie. Nunc vitae est eros. Etiam at sem ut neque feugiat pharetra. Donec malesuada purus erat, vitae bibendum ante mollis eget. Praesent sit amet velit fringilla, tincidunt mi sit amet, maximus ante.".split(" "));
+		String tmp = "{"+((Tableau)d).getChamps().stream().map(x -> "'" + x.getName() + "': '" + lorem.get(new Random().nextInt(lorem.size())).replaceAll("[^a-zA-Z0-9]", " ") +"'").collect(Collectors.joining(", "))+"},";
+		return tmp;
+	}
+
+	private void createExternalRessource(DataDisplay d){
+		String functionName = d.getDataSource();
+		Boolean isTableau = d.getHtmlComponent().contains("Tableau");
 		FileWriter file = null;
 		if (functionName == null) functionName = "getData";
 		try {
-			file = createFile("external/getData_" + functionName + ".js");
+			File testFile = new File(path + "/external/getData_" + functionName + ".js");
+			if (!testFile.exists()) {
+				file = new FileWriter(testFile);
+			} else {
+				return;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		// mock Data to display the array, will be replaced by []
+		StringBuilder mockData = new StringBuilder("[]");
 
-		String mockData = "[]";
+
+		if (isTableau){
+			mockData = new StringBuilder("[");
+			for (int k = 0; k<10; k++) mockData.append(generateRandomDataArray(d));
+			mockData.append("]");
+		}
 
 		w(file, String.format("function %s(){\n" +
 				"        return  %s\n" +
@@ -145,7 +162,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"    {\n" +
 				"        this.currentComponent = component\n" +
 				"    }\n" +
-				"  }", menuItems.get(0)));
+				"  }", menuItems.get(0).replaceAll(" ", "")));
 		w(file, "\n}\n\n" +
 				"</script>");
 		// App Style
@@ -200,7 +217,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 			for (DataDisplay d : dataDisplays){
 				dataDisplaysHtml.append(d.getHtmlComponent()).append("\n");
 				d.accept(this);
-				createExternalRessource(d.getDataSource());
+				createExternalRessource(d);
 			}
 		}
 		boolean hasTableau = dataDisplaysHtml.toString().contains("Tableau");
