@@ -3,15 +3,13 @@ package com.polytech.si5.dsl.kernel.generator;
 import com.polytech.si5.dsl.g.model.*;
 import com.polytech.si5.dsl.g.visitor.Visitor;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ToWiring extends Visitor<StringBuffer> {
@@ -56,17 +54,36 @@ public class ToWiring extends Visitor<StringBuffer> {
 		return new FileWriter(path + "/" + fileName);
 	}
 
-	private void createExternalRessource(String functionName){
+	private String generateRandomDataArray(DataDisplay d){
+		List<String> lorem = Arrays.asList("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed commodo rutrum posuere. Sed molestie semper nulla quis molestie. Nunc vitae est eros. Etiam at sem ut neque feugiat pharetra. Donec malesuada purus erat, vitae bibendum ante mollis eget. Praesent sit amet velit fringilla, tincidunt mi sit amet, maximus ante.".split(" "));
+		String tmp = "{"+((Tableau)d).getChamps().stream().map(x -> "'" + x.getName() + "': '" + lorem.get(new Random().nextInt(lorem.size())).replaceAll("[^a-zA-Z0-9]", " ") +"'").collect(Collectors.joining(", "))+"},";
+		return tmp;
+	}
+
+	private void createExternalRessource(DataDisplay d){
+		String functionName = d.getDataSource();
+		Boolean isTableau = d.getHtmlComponent().contains("Tableau");
 		FileWriter file = null;
 		if (functionName == null) functionName = "getData";
 		try {
-			file = createFile("external/getData_" + functionName + ".js");
+			File testFile = new File(path + "/external/getData_" + functionName + ".js");
+			if (!testFile.exists()) {
+				file = new FileWriter(testFile);
+			} else {
+				return;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		// mock Data to display the array, will be replaced by []
+		StringBuilder mockData = new StringBuilder("[]");
 
-		String mockData = "[]";
+
+		if (isTableau){
+			mockData = new StringBuilder("[");
+			for (int k = 0; k<10; k++) mockData.append(generateRandomDataArray(d));
+			mockData.append("]");
+		}
 
 		w(file, String.format("function %s(){\n" +
 				"        return  %s\n" +
@@ -104,16 +121,18 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 
 		context.put("pass", PASS.TWO);
+		String logo = app.getUrlLogo()!=null?" :logoUrl=\""+app.getUrlLogo() +"\"\n":"";
+
 		w(file, "<template>");
 		w(file,"\n\t<div id=\"app\">");
 		if (pages != null && !pages.isEmpty()) {
-			w(file, String.format("\n    <Navbar :logoUrl=\"'https://drive.google" +
-							".com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\"\n" +
+			w(file, String.format("\n    <Navbar" + logo +
 							"      :NavbarTitle=\"'%s'\"\n" +
 							"      :MenuItems=\"%s\"\n" +
 							"      :colorNavBar=\"'%s'\"\n" +
 							"      @swapComponent=\"loadComponent\"\n" +
-							"    />\n", app.getName().replaceAll("\"", ""),
+							"    />\n",
+					app.getName().replaceAll("\"", ""),
 					menuItems.stream().map(x -> "'" + x + "'").collect(Collectors.toList()), app.getColorNavBar()));
 		}
 		w(file, "    <div class=\"container\">\n" +
@@ -133,9 +152,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"  },\n",
 				menuImports, menuItems.stream().map(x -> x.replaceAll(" ", "")).collect(Collectors.joining(", "))));
 
-		w(file, "  data() {\n" +
+		w(file,  String.format("  data() {\n" +
 				"    return {\n" +
-				"      currentComponent: null,\n" +
+				"      currentComponent: %s,\n" +
 				"    }\n" +
 				"  },\n" +
 				"  methods: {\n" +
@@ -143,7 +162,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"    {\n" +
 				"        this.currentComponent = component\n" +
 				"    }\n" +
-				"  }");
+				"  }", menuItems.get(0).replaceAll(" ", "")));
 		w(file, "\n}\n\n" +
 				"</script>");
 		// App Style
@@ -198,7 +217,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 			for (DataDisplay d : dataDisplays){
 				dataDisplaysHtml.append(d.getHtmlComponent()).append("\n");
 				d.accept(this);
-				createExternalRessource(d.getDataSource());
+				createExternalRessource(d);
 			}
 		}
 		boolean hasTableau = dataDisplaysHtml.toString().contains("Tableau");
