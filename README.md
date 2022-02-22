@@ -32,8 +32,15 @@ java 11
 
 ## Compilation
 
-Adapter les fichiers [IDE/front/.env](IDE/front/.env) et [IDE/back/.env](IDE/back/.env)  
-```./build```
+Si l'application n'est pas lancée en local, adapter les fichiers [IDE/front/.env](IDE/front/.env) et [IDE/back/.env](IDE/back/.env)  
+
+### Sans IDE
+
+```./build.sh```
+
+### Avec IDE
+
+```./build_ide.sh```
 
 ## Exécution
 

@@ -21,7 +21,7 @@ RUN mkdir output
 RUN mkdir output/src
 
 # copie 'package.json' et 'package-lock.json' (si disponible)
-COPY output/package*.json ./output
+COPY output/package*.json ./output/
 
 # installe les dépendances du projet
 RUN npm install --prefix ./output/
@@ -29,7 +29,7 @@ RUN npm install --prefix ./output/
 
 
 # copie les fichiers et dossiers du projet dans le dossier de travail (par exemple : le dossier 'app')
-COPY output/src ./output/src
+COPY output/src ./output/src/
 
 EXPOSE 8080
 CMD [ "npm", "run", "serve", "--prefix", "./output" ]
