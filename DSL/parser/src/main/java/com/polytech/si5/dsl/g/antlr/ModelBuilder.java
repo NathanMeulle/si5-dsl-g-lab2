@@ -44,6 +44,9 @@ public class ModelBuilder extends CompetitionMLBaseListener {
                 theApp.setColorNavBar(color);
             }
         }
+        if(ctx.logo!=null){
+            theApp.setHaveLogo(true);
+        }
     }
 
     @Override

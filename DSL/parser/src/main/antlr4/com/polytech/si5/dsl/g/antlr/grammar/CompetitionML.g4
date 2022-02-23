@@ -6,7 +6,7 @@ grammar CompetitionML;
  ******************/
 
 root            :   app discipline classement EOF;
-app            :   'app' color=COLOR_HEXA;
+app            :   'app' color=COLOR_HEXA (logo=LOGO)*;
 discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE ;
 
 classement : 'classement' name=IDENTIFIER declaration;
@@ -34,6 +34,7 @@ IDENTIFIER :  QUOTE WORD+ QUOTE ;
 DISCIPLINE :   'championnat' | 'tournoi';
 STYLE_TEXT: 'souligné' | 'gras';
 COLOR_HEXA: '#' ([0-9] | [A-F])*;
+LOGO: 'with logo';
 /*************
  ** Helpers **
  *************/
