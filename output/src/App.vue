@@ -12,15 +12,15 @@
 </template>
 <script>
 import Navbar from './components/Navbar.vue'
-import classement from './views/classement.vue'
+import classement_component from './views/classement_component.vue'
 export default {
   name: 'App',
   components: {
-    Navbar, classement
+    Navbar, classement_component
   },
   data() {
     return {
-      currentComponent: classement,
+      currentComponent: classement_component,
     }
   },
   methods: {
