@@ -5,8 +5,9 @@ grammar CompetitionML;
  ** Parser rules **
  ******************/
 
-root            :   discipline classement EOF;
-discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE;
+root            :   app discipline classement EOF;
+app            :   'app' color=COLOR_HEXA;
+discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE ;
 
 classement : 'classement' name=IDENTIFIER declaration;
 declaration : (disposition | tableau) (disposition | tableau);
