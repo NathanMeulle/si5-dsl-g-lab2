@@ -32,9 +32,11 @@ public class ModelBuilder extends CompetitionMLBaseListener {
 
     private Map<CompetitionMLParser.StylesContext, Style> styles = new HashMap<>();
     private Map<CompetitionMLParser.ColumnContext, Champ> fields   = new HashMap<>();
-    private Map<CompetitionMLParser.ChampsContext, List<Champ>> columnLists = new HashMap<>();
+    private Map<CompetitionMLParser.Columns_refsContext, List<Champ>> columnLists = new HashMap<CompetitionMLParser.Columns_refsContext, List<Champ>>();
     private Map<CompetitionMLParser.TableauContext, Tableau> tables = new HashMap<>();
     private Map<ParserRuleContext, Page> pages = new HashMap<>();
+
+    private Map<String, Champ> fieldRefs = new HashMap<>();
 
     /**************************
      ** Listening mechanisms **
@@ -123,15 +125,34 @@ public class ModelBuilder extends CompetitionMLBaseListener {
     public void enterColumn(CompetitionMLParser.ColumnContext ctx) {
         Champ champ = new Champ(ctx.name.getText());
         fields.put(ctx,champ);
+        fieldRefs.put(champ.getName(),champ);
+    }
+
+    @Override
+    public void enterColumns_refs(CompetitionMLParser.Columns_refsContext ctx) {
+        List<Champ> columnRefs = new ArrayList<>();
+        for (CompetitionMLParser.Column_refContext columnRef: ctx.column_ref()) {
+            String champName = columnRef.name.getText();
+            Champ champ = fieldRefs.get(champName);
+            if (champ==null) {
+                // TODO: 23/02/2022 Better error handling
+                throw new SemanticError(ctx, String.format("Le champ %s n'a pas été déclaré", champName));
+            }
+            columnRefs.add(champ);
+        }
+        columnLists.put(ctx,columnRefs);
     }
 
     @Override
     public void enterChamps(CompetitionMLParser.ChampsContext ctx) {
         Style style = styles.get(ctx.styles());
-        List<Champ> champs = ctx.columns().column().stream()
-                .map(champContext -> fields.get(champContext))
-                .collect(Collectors.toList());
-        columnLists.put(ctx,champs);
+        List<Champ> champs = new ArrayList<>();
+        for (CompetitionMLParser.Column_refContext columnRef: ctx.columns_refs().column_ref()) {
+            String champName = columnRef.name.getText();
+            Champ champ = fieldRefs.get(champName);
+            champ.consume(style);
+            champs.add(champ);
+        }
     }
 
     /**
@@ -190,15 +211,15 @@ public class ModelBuilder extends CompetitionMLBaseListener {
         }
 
         for(CompetitionMLParser.FiltresContext filtresContext :ctx.filtres()){
-            Filtre filtre = new Filtre();
-            FiltreType filtreType = FiltreType.get(filtresContext.type.getText());
-            filtre.setFiltreType(filtreType);
-            tableau.getFiltres().add(filtre);
-        }
+            FiltreType filtreType = FiltreType.get(filtresContext.FILTRE_TYPE().getText());
 
-        for (CompetitionMLParser.ChampsContext champsContext : ctx.champs()){
-            List<Champ> champList = columnLists.get(champsContext);
-            tableau.getChamps().addAll(champList);
+            List<Champ> champsRefs = columnLists.get(filtresContext.columns_refs());
+            for (Champ champ : champsRefs) {
+                Filtre filtre = new Filtre();
+                filtre.setFiltreType(filtreType);
+                filtre.setChamp(champ);
+                tableau.getFiltres().add(filtre);
+            }
         }
 
     }

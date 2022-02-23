@@ -12,14 +12,16 @@ import java.util.List;
 @Setter
 public class Tableau extends DataDisplay implements Visitable {
     private int size;
-    private List<Champ> champs = new ArrayList<>();
-    private List<Filtre> filtres = new ArrayList<>();
+    private List<Champ> champs;
+    private List<Filtre> filtres;
     private final String htmlComponent = "<Tableau />";
     private int nbItemPerPage = 0;
     private boolean sortable = false;
 
     public Tableau(String name) {
         super(name);
+        champs = new ArrayList<>();
+        filtres = new ArrayList<>();
     }
 
     @Override
