@@ -27,11 +27,18 @@ public class ToWiringTableau {
     public String generateHTML(){
         StringBuilder res = new StringBuilder();
 
+        String pagination = String.format("    <b-pagination\n"+
+                "      v-model=\"currentPage\"\n" +
+                "      :total-rows=\"rows\"\n" +
+                "      :per-page=\"perPage\"\n"+
+                "      aria-controls=\"classementTable\"\n" +
+                "    ></b-pagination>\n");
 
         res.append(String.format("<template>\n" +
                 "  <div>\n" +
                 "    <h4 class=\"text-left\">%s</h4>\n" +
-                "    <b-table striped hover :items=\"items\" :fields=\"fields\" :per-page=\"%s\" show-empty></b-table>\n" +
+                "    <b-table striped hover id=\"classementTable\" :items=\"items\" :fields=\"fields\" :per-page=\"perPage\"  :current-page=\"currentPage\" show-empty></b-table>\n" +
+                        pagination +
                 "  </div>\n" +
                 "</template>", this.name, this.size));
 
@@ -44,12 +51,21 @@ public class ToWiringTableau {
                 "  },\n" +
                 "    data() {\n" +
                 "      return {\n" +
+                "        perPage: \"%s\",\n"+
+                "        currentPage: 1,\n"+
                 "        items: [],\n" +
                 "        fields: [\n%s        ],\n" +
                 "      }\n" +
+                ""+
+                "     },\n"+
+                "     computed: {\n"+
+                "       rows() {\n"+
+                "           return this.items.length\n"+
+                "       }\n"+
+                ""+
                 "    }\n" +
                 "  }\n" +
-                "</script>",this.dataSource.replaceAll("\"",""), this.dataSource.replaceAll("\"",""), generateFields()));
+                "</script>",this.dataSource.replaceAll("\"",""), this.dataSource.replaceAll("\"",""), this.size, generateFields()));
 
 
         return res.toString();
