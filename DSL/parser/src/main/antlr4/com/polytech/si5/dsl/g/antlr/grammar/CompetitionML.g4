@@ -16,8 +16,9 @@ disposition : 'disposition' padding;
 padding : 'padding' value=INTEGER 'px';
 
 /* Tableau */
-tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER tableau_def titre? filtres* champs*;
+tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER sortable? tableau_def titre? filtres* champs*;
 tableau_def: '[' columns ']';
+sortable: SORTABLE;
 columns:  column ('|' column)*  ;
 column : name=WORD;
 
@@ -37,6 +38,7 @@ DISCIPLINE :   'championnat' | 'tournoi';
 STYLE_TEXT: 'souligné' | 'gras' | 'masqué';
 COLOR_HEXA: '#' ([0-9] | [A-F])*;
 LOGO: 'with logo';
+SORTABLE: 'triable';
 /*************
  ** Helpers **
  *************/
