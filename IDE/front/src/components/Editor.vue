@@ -1,6 +1,6 @@
 <template>
   <div class="editor">
-    <MonacoEditor id="monaco"  v-model="code" :options="options"/>
+    <MonacoEditor id="monaco" v-model="code" :options="options"/>
     <v-btn @click="render" id="render" elevation="2">
       Render
     </v-btn>
@@ -9,8 +9,15 @@
 
 <script>
 import MonacoEditor from 'vue-monaco'
+import axios from 'axios'
 
 export default {
+  props:['init_code'],
+  watch: {
+    init_code(n){
+      this.code = n;
+    }
+  },
   components: {
     MonacoEditor
   },
@@ -19,14 +26,18 @@ export default {
     return {
       code: '',
       options:{
-        theme: 'vs'
+        theme: 'vs',
+        automaticLayout: true,
+        minimap: {
+          enabled: false
+        }
       }
     }
   },
 
   methods: {
     render(){
-      console.log(this.code)
+      axios.post(`http://${process.env.VUE_APP_BACK_BASE_API}/render`, {code:this.code});
     }
   }
 }
@@ -36,15 +47,13 @@ export default {
 #monaco {
   width: 100%;
   height: 100%;
-  resize: vertical;
-  border: solid 1px black;
 }
 .editor {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  height: 100%;
 }
 #render {
   margin: 5px;
