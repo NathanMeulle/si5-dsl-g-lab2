@@ -29,5 +29,8 @@ public abstract class Visitor<T> {
 	}
 
 
+	public void visit(Titre titre) {
+		//todo
+	}
 }
 

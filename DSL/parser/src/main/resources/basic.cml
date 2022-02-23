@@ -2,8 +2,9 @@ app #77B5FE
 discipline "triathlon" championnat
 
 classement "classement"
+    titre en masqué
     disposition padding 20 px
     tableau "helloworld" top 5 [ Equipe | Prenom | Nom | Nationalité | Score ]
-    filtres Team | Nationalité unique
-    champs Nom | Equipe en gras, #00008C
-    champs Prenom en souligné, #AA0000
+        filtres Team | Nationalité unique
+        champs Nom | Equipe en gras, #00008C
+        champs Prenom en souligné, #AA0000

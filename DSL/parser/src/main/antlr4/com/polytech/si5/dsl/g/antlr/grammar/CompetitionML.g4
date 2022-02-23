@@ -9,13 +9,14 @@ root           :   app discipline classement EOF;
 app            :   'app' color=COLOR_HEXA (logo=LOGO)*;
 discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE ;
 
-classement : 'classement' name=IDENTIFIER declaration;
-declaration : (disposition | tableau) (disposition | tableau);
+classement : 'classement' name=IDENTIFIER titre? classement_options* tableau;
+classement_options : (disposition | padding);
+titre: 'titre' styles;
 disposition : 'disposition' padding;
 padding : 'padding' value=INTEGER 'px';
 
 /* Tableau */
-tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER tableau_def filtres* champs*;
+tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER tableau_def titre? filtres* champs*;
 tableau_def: '[' columns ']';
 columns:  column ('|' column)*  ;
 column : name=WORD;

@@ -3,10 +3,13 @@ package com.polytech.si5.dsl.g.antlr;
 import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLBaseListener;
 import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLParser;
 import com.polytech.si5.dsl.g.model.*;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class ModelBuilder extends CompetitionMLBaseListener {
@@ -17,7 +20,6 @@ public class ModelBuilder extends CompetitionMLBaseListener {
 
     private App theApp = null;
     private boolean built = false;
-    private ClassementPage classementPage;
 
     public App retrieve() {
         if (built) { return theApp; }
@@ -28,8 +30,11 @@ public class ModelBuilder extends CompetitionMLBaseListener {
      ** Symbol tables **
      *******************/
 
-    private Map<CompetitionMLParser.ColumnContext,Champ> fields   = new HashMap<>();
     private Map<CompetitionMLParser.StylesContext, Style> styles = new HashMap<>();
+    private Map<CompetitionMLParser.ColumnContext, Champ> fields   = new HashMap<>();
+    private Map<CompetitionMLParser.ChampsContext, List<Champ>> columnLists = new HashMap<>();
+    private Map<CompetitionMLParser.TableauContext, Tableau> tables = new HashMap<>();
+    private Map<ParserRuleContext, Page> pages = new HashMap<>();
 
     /**************************
      ** Listening mechanisms **
@@ -55,6 +60,13 @@ public class ModelBuilder extends CompetitionMLBaseListener {
     }
 
     @Override
+    public void exitRoot(CompetitionMLParser.RootContext ctx) {
+        this.built = true;
+        List<Page> appPages = pages.values().stream().collect(Collectors.toList());
+        this.theApp.getPages().addAll(appPages);
+    }
+
+    @Override
     public void enterDiscipline(CompetitionMLParser.DisciplineContext ctx) {
         String discipline = ctx.name.getText();
         theApp.setName(discipline);
@@ -71,12 +83,6 @@ public class ModelBuilder extends CompetitionMLBaseListener {
         Disposition disposition = new Disposition();
         disposition.setPadding(value);
     }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterTableau(CompetitionMLParser.TableauContext ctx) { }
 
 
     @Override
@@ -119,6 +125,14 @@ public class ModelBuilder extends CompetitionMLBaseListener {
         fields.put(ctx,champ);
     }
 
+    @Override
+    public void enterChamps(CompetitionMLParser.ChampsContext ctx) {
+        Style style = styles.get(ctx.styles());
+        List<Champ> champs = ctx.columns().column().stream()
+                .map(champContext -> fields.get(champContext))
+                .collect(Collectors.toList());
+        columnLists.put(ctx,champs);
+    }
 
     /**
      * {@inheritDoc}
@@ -126,11 +140,36 @@ public class ModelBuilder extends CompetitionMLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterClassement(CompetitionMLParser.ClassementContext ctx) {
-        this.classementPage = new ClassementPage(ctx.name.getText().replace("\"",""));
-        this.theApp.getPages().add(classementPage);
-
+        ClassementPage classementPage = new ClassementPage(ctx.name.getText().replace("\"",""));
+        pages.put(ctx,classementPage);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override
+    public void exitClassement(CompetitionMLParser.ClassementContext ctx) {
+        ClassementPage classementPage = (ClassementPage) pages.get(ctx);
+        Style titleStyle = styles.get(ctx.titre().styles());
+        classementPage.getTitre().consume(titleStyle);
+        pages.put(ctx,classementPage);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterTableau(CompetitionMLParser.TableauContext ctx) {
+        Tableau tableau = new Tableau(ctx.name.getText());
+        tableau.setSize(Integer.parseInt(ctx.max.getText()));
+        tableau.setChamps(new ArrayList<>());
+        tableau.setFiltres(new ArrayList<>());
+        tableau.setChamps(new ArrayList<>());
+        tables.put(ctx,tableau);
+    }
 
     /**
      * {@inheritDoc}
@@ -138,34 +177,30 @@ public class ModelBuilder extends CompetitionMLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitTableau(CompetitionMLParser.TableauContext ctx) {
-        Tableau tableau = new Tableau(ctx.name.getText());
-        tableau.setSize(Integer.parseInt(ctx.max.getText()));
-        tableau.setChamps(new ArrayList<>());
-        tableau.setFiltres(new ArrayList<>());
-        tableau.setChamps(new ArrayList<>());
+        Tableau tableau = tables.get(ctx);
+        if (ctx.titre() != null) {
+            Style titleStyle = styles.get(ctx.titre().styles());
+            tableau.getTitre().consume(titleStyle);
+        }
+
         for(CompetitionMLParser.ColumnContext columnsContext: ctx.tableau_def().columns().column()){
             Champ champ = fields.get(columnsContext);
             tableau.getChamps().add(champ);
         }
+
         for(CompetitionMLParser.FiltresContext filtresContext :ctx.filtres()){
             Filtre filtre = new Filtre();
             FiltreType filtreType = FiltreType.get(filtresContext.type.getText());
             filtre.setFiltreType(filtreType);
             tableau.getFiltres().add(filtre);
         }
+
         for (CompetitionMLParser.ChampsContext champsContext : ctx.champs()){
-            Style style = styles.get(champsContext.styles());
+            List<Champ> champList = columnLists.get(champsContext);
+            tableau.getChamps().addAll(champList);
         }
-        this.classementPage.getDataDisplays().add(tableau);
+
     }
-
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void exitClassement(CompetitionMLParser.ClassementContext ctx) { }
 
     /**
      * {@inheritDoc}
@@ -182,12 +217,6 @@ public class ModelBuilder extends CompetitionMLBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitColumns(CompetitionMLParser.ColumnsContext ctx) { }
-
-    @Override
-    public void exitRoot(CompetitionMLParser.RootContext ctx) {
-        this.built = true;
-    }
-
 
 }
 
