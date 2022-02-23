@@ -39,19 +39,33 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>4.7</version>
-                <configuration>
-                    <arguments>
-                        <argument>-package</argument>
-                        <argument>${generated.package}</argument>
-                    </arguments>
-                </configuration>
                 <executions>
+                <execution>
+                        <id>java</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>-package</argument>
+                                <argument>${generated.package}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                     <execution>
-                        <id>antlr</id>
+                        <id>js</id>
+                        <configuration>
+                            <sourceDirectory>${basedir}/src/main/antlr4/com/polytech/si5/dsl/g/antlr/grammar</sourceDirectory>
+                            <options>
+                                <language>JavaScript</language>
+                            </options>
+                            <outputDirectory>${project.build.directory}/generated-sources/js/</outputDirectory>     
+                        </configuration>
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
                     </execution>
+                    
                 </executions>
             </plugin>
             <plugin>
