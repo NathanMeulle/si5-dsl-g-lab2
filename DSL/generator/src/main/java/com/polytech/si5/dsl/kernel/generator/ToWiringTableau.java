@@ -19,7 +19,7 @@ public class ToWiringTableau {
     public ToWiringTableau(Tableau tableau) {
         this.size = tableau.getSize();
         this.name = tableau.getName().replaceAll( "\"", "");
-        this.dataSource = tableau.getDataSource()==null?"getData":tableau.getDataSource();
+        this.dataSource = tableau.getDataSource()==null?tableau.getName():tableau.getDataSource();
         this.champs = tableau.getChamps();
         this.filtres =  tableau.getFiltres();
     }
@@ -41,7 +41,7 @@ public class ToWiringTableau {
                 "  export default {\n" +
                 "  mounted() {\n" +
                 "    this.items =  data.%s();\n" +
-                "  }," +
+                "  },\n" +
                 "    data() {\n" +
                 "      return {\n" +
                 "        items: [],\n" +
@@ -49,7 +49,7 @@ public class ToWiringTableau {
                 "      }\n" +
                 "    }\n" +
                 "  }\n" +
-                "</script>",this.dataSource, this.dataSource, generateFields()));
+                "</script>",this.dataSource.replaceAll("\"",""), this.dataSource.replaceAll("\"",""), generateFields()));
 
 
         return res.toString();

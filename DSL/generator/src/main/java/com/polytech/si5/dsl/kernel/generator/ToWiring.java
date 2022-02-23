@@ -64,7 +64,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		String functionName = d.getDataSource();
 		Boolean isTableau = d.getHtmlComponent().contains("Tableau");
 		FileWriter file = null;
-		if (functionName == null) functionName = "getData";
+		if (functionName == null) functionName = d.getName().replaceAll("\"","");
 		try {
 			File testFile = new File(path + "/external/getData_" + functionName + ".js");
 			if (!testFile.exists()) {
@@ -81,7 +81,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 		if (isTableau){
 			mockData = new StringBuilder("[");
-			for (int k = 0; k<10; k++) mockData.append(generateRandomDataArray(d));
+			for (int k = 0; k<100; k++) mockData.append(generateRandomDataArray(d));
 			mockData.append("]");
 		}
 
@@ -98,6 +98,36 @@ public class ToWiring extends Visitor<StringBuffer> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void createExternalRessourceLogo() {
+		FileWriter file = null;
+
+		try {
+			File testFile = new File(path + "/external/getData_logoUrl.js");
+			if (!testFile.exists()) {
+				file = new FileWriter(testFile);
+			} else {
+				return;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		w(file, "function getLogoUrl(){\n" +
+				"    return  'https://drive.google.com/uc?export=view&id=1IXY8IZai07UAj0yamXUTTy-RA8baWN2I'\n" +
+				"}\n" +
+				"module.exports = {\n" +
+				"    getLogoUrl,\n" +
+				"}");
+
+		try {
+			file.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
 	}
 
 
@@ -121,7 +151,11 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 
 		context.put("pass", PASS.TWO);
-		String logo = app.getUrlLogo()!=null?" :logoUrl=\""+app.getUrlLogo() +"\"\n":"";
+		String logo = "";
+//		String logo = app.has!=null?" :logoUrl=\""+app.getUrlLogo() +"\"\n":"";
+		if (app.isHaveLogo()){
+			logo = " :logoUrl=\"logoUrl\"\n";
+		}
 
 		w(file, "<template>");
 		w(file,"\n\t<div id=\"app\">");
@@ -140,6 +174,10 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"    </div>");
 
 		String menuImports = menuItems.stream().map(x -> "\nimport " + x.replaceAll(" ", "") + " from './views/" + x.replaceAll(" ", "") + ".vue'" ).collect(Collectors.joining());
+		if (app.isHaveLogo()) {
+			menuImports+="\nvar logoUrlData = require('./external/getData_logoUrl');\n";
+			createExternalRessourceLogo();
+		}
 		w(file, String.format("\n  </div>\n" +
 				"</template>\n" +
 				"<script>\n" +
@@ -155,6 +193,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		w(file,  String.format("  data() {\n" +
 				"    return {\n" +
 				"      currentComponent: %s,\n" +
+				(app.isHaveLogo()?"      logoUrl: String,\n":"") +
 				"    }\n" +
 				"  },\n" +
 				"  methods: {\n" +
@@ -162,7 +201,13 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"    {\n" +
 				"        this.currentComponent = component\n" +
 				"    }\n" +
-				"  }", menuItems.get(0).replaceAll(" ", "")));
+				"  },", menuItems.get(0).replaceAll(" ", "")));
+
+		if (app.isHaveLogo()){
+			w(file, String.format("\n  mounted() {\n" +
+					"    this.logoUrl =  logoUrlData.getLogoUrl();\n" +
+					"  },  "));
+		}
 		w(file, "\n}\n\n" +
 				"</script>");
 		// App Style
