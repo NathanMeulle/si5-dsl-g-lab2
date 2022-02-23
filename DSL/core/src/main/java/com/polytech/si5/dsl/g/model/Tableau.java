@@ -14,6 +14,7 @@ public class Tableau extends DataDisplay implements Visitable {
     private List<Champ> champs;
     private List<Filtre> filtres;
     private final String htmlComponent = "<Tableau />";
+    private int nbItemPerPage = 0;
 
     public Tableau(String name) {
         super(name);

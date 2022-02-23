@@ -14,6 +14,7 @@ public class ToWiringTableau {
     private List<Champ> champs;
     private List<Filtre> filtres;
     private Integer size;
+    private Integer nbItemPerPage;
 
 
     public ToWiringTableau(Tableau tableau) {
@@ -22,11 +23,10 @@ public class ToWiringTableau {
         this.dataSource = tableau.getDataSource()==null?tableau.getName():tableau.getDataSource();
         this.champs = tableau.getChamps();
         this.filtres =  tableau.getFiltres();
+        this.nbItemPerPage = tableau.getNbItemPerPage();
     }
 
-    public String generateHTML(){
-        StringBuilder res = new StringBuilder();
-
+    public String getPagination(){
         String pagination = String.format("    <b-pagination\n"+
                 "      v-model=\"currentPage\"\n" +
                 "      :total-rows=\"rows\"\n" +
@@ -34,20 +34,30 @@ public class ToWiringTableau {
                 "      aria-controls=\"classementTable\"\n" +
                 "    ></b-pagination>\n");
 
+        if (nbItemPerPage==0) {
+            nbItemPerPage = size;
+            return "";
+        }
+        return pagination;
+    }
+
+    public String generateHTML(){
+        StringBuilder res = new StringBuilder();
+
         res.append(String.format("<template>\n" +
                 "  <div>\n" +
                 "    <h4 class=\"text-left\">%s</h4>\n" +
                 "    <b-table striped hover id=\"classementTable\" :items=\"items\" :fields=\"fields\" :per-page=\"perPage\"  :current-page=\"currentPage\" show-empty></b-table>\n" +
-                        pagination +
+                        getPagination() +
                 "  </div>\n" +
-                "</template>", this.name, this.size));
+                "</template>", this.name));
 
 
         res.append(String.format("<script>\n" +
                 "var data = require('../external/getData_%s');\n" +
                 "  export default {\n" +
                 "  mounted() {\n" +
-                "    this.items =  data.%s();\n" +
+                "    this.items =  data.%s().slice(0, %s);\n" +
                 "  },\n" +
                 "    data() {\n" +
                 "      return {\n" +
@@ -60,12 +70,12 @@ public class ToWiringTableau {
                 "     },\n"+
                 "     computed: {\n"+
                 "       rows() {\n"+
-                "           return this.items.length\n"+
+                "           return %s\n"+
                 "       }\n"+
                 ""+
                 "    }\n" +
                 "  }\n" +
-                "</script>",this.dataSource.replaceAll("\"",""), this.dataSource.replaceAll("\"",""), this.size, generateFields()));
+                "</script>",this.dataSource.replaceAll("\"",""), this.dataSource.replaceAll("\"",""), this.size, this.nbItemPerPage, generateFields(), this.size));
 
 
         return res.toString();
