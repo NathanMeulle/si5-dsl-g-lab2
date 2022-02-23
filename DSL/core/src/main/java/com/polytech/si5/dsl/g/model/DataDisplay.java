@@ -13,5 +13,6 @@ public abstract class DataDisplay extends NamedElement implements Visitable,Disp
 
     public DataDisplay(String name) {
         super(name);
+        titre = new Titre(name);
     }
 }
