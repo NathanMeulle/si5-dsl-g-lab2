@@ -5,6 +5,8 @@ import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLParser;
 import com.polytech.si5.dsl.g.model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ModelBuilder extends CompetitionMLBaseListener {
@@ -25,6 +27,9 @@ public class ModelBuilder extends CompetitionMLBaseListener {
     /*******************
      ** Symbol tables **
      *******************/
+
+    private Map<CompetitionMLParser.ColumnContext,Champ> fields   = new HashMap<>();
+    private Map<CompetitionMLParser.StylesContext, Style> styles = new HashMap<>();
 
     /**************************
      ** Listening mechanisms **
@@ -73,12 +78,45 @@ public class ModelBuilder extends CompetitionMLBaseListener {
      */
     @Override public void enterTableau(CompetitionMLParser.TableauContext ctx) { }
 
+
+    @Override
+    public void enterStyles(CompetitionMLParser.StylesContext ctx) {
+        Style style = new Style();
+        for (CompetitionMLParser.StyleContext styleContext : ctx.style()) {
+            if (styleContext.style_text != null) {
+                switch (styleContext.style_text.getText()) {
+                    case Constants.UNDERLINE:
+                        style.setUnderline(true);
+                        break;
+                    case Constants.BOLD:
+                        style.setBold(true);
+                        break;
+                    case Constants.HIDDEN:
+                        style.setHidden(true);
+                        break;
+                }
+            }
+
+            if(styleContext.color != null ){
+                String color = styleContext.color.getText();
+                if(ColorValidator.isHexa(color)){
+                    style.setHexaColor(color);
+                }
+            }
+        }
+
+        styles.put(ctx,style);
+    }
+
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterColumns(CompetitionMLParser.ColumnsContext ctx) {
+    @Override
+    public void enterColumn(CompetitionMLParser.ColumnContext ctx) {
+        Champ champ = new Champ(ctx.name.getText());
+        fields.put(ctx,champ);
     }
 
 
@@ -106,7 +144,7 @@ public class ModelBuilder extends CompetitionMLBaseListener {
         tableau.setFiltres(new ArrayList<>());
         tableau.setChamps(new ArrayList<>());
         for(CompetitionMLParser.ColumnContext columnsContext: ctx.tableau_def().columns().column()){
-            Champ champ = new Champ(columnsContext.name.getText());
+            Champ champ = fields.get(columnsContext);
             tableau.getChamps().add(champ);
         }
         for(CompetitionMLParser.FiltresContext filtresContext :ctx.filtres()){
@@ -116,29 +154,7 @@ public class ModelBuilder extends CompetitionMLBaseListener {
             tableau.getFiltres().add(filtre);
         }
         for (CompetitionMLParser.ChampsContext champsContext : ctx.champs()){
-            Style style = new Style();
-            for(CompetitionMLParser.StyleContext styleContext :champsContext.style()){
-                if(styleContext.style_text != null){
-                    switch (styleContext.style_text.getText()){
-                        case Constants.UNDERLINE:
-                            style.setUnderline(true);
-                            break;
-                        case Constants.BOLD:
-                            style.setBold(true);
-                            break;
-
-                    }
-                }
-                if(styleContext.color !=null ){
-                    String color = styleContext.color.getText();
-                    if(ColorValidator.isHexa(color)){
-                        style.setHexaColor(color);
-                    }
-                }
-
-
-            }
-
+            Style style = styles.get(champsContext.styles());
         }
         this.classementPage.getDataDisplays().add(tableau);
     }

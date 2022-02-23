@@ -5,7 +5,7 @@ grammar CompetitionML;
  ** Parser rules **
  ******************/
 
-root            :   app discipline classement EOF;
+root           :   app discipline classement EOF;
 app            :   'app' color=COLOR_HEXA (logo=LOGO)*;
 discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE ;
 
@@ -22,7 +22,8 @@ column : name=WORD;
 
 /* Filtre tableau*/
 filtres : 'filtres' columns type=WORD;
-champs: 'champs' columns 'en' style (COMA style)*;
+champs: 'champs' columns styles;
+styles: 'en' style (COMA style)*;
 style: (style_text=STYLE_TEXT | color=COLOR_HEXA);
 
 
@@ -32,7 +33,7 @@ style: (style_text=STYLE_TEXT | color=COLOR_HEXA);
 
 IDENTIFIER :  QUOTE WORD+ QUOTE ;
 DISCIPLINE :   'championnat' | 'tournoi';
-STYLE_TEXT: 'souligné' | 'gras';
+STYLE_TEXT: 'souligné' | 'gras' | 'masqué';
 COLOR_HEXA: '#' ([0-9] | [A-F])*;
 LOGO: 'with logo';
 /*************

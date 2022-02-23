@@ -173,7 +173,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"      <div :is=\"currentComponent\"></div>\n" +
 				"    </div>");
 
-		String menuImports = menuItems.stream().map(x -> "\nimport " + x.replaceAll(" ", "") + " from './views/" + x.replaceAll(" ", "") + ".vue'" ).collect(Collectors.joining());
+		String menuImports = menuItems.stream().map(x -> "\nimport " + x.replaceAll(" ", "") + "_component" + " from './views/" + x.replaceAll(" ", "") + "_component.vue'" ).collect(Collectors.joining());
 		if (app.isHaveLogo()) {
 			menuImports+="\nvar logoUrlData = require('./external/getData_logoUrl');\n";
 			createExternalRessourceLogo();
@@ -188,7 +188,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"  components: {\n" +
 				"    Navbar, %s\n" +
 				"  },\n",
-				menuImports, menuItems.stream().map(x -> x.replaceAll(" ", "")).collect(Collectors.joining(", "))));
+				menuImports, menuItems.stream().map(x -> x.replaceAll(" ", "")+"_component").collect(Collectors.joining(", "))));
 
 		w(file,  String.format("  data() {\n" +
 				"    return {\n" +
@@ -201,7 +201,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"    {\n" +
 				"        this.currentComponent = component\n" +
 				"    }\n" +
-				"  },", menuItems.get(0).replaceAll(" ", "")));
+		"  },", menuItems.get(0).replaceAll(" ", "")+"_component"));
 
 		if (app.isHaveLogo()){
 			w(file, String.format("\n  mounted() {\n" +
@@ -251,8 +251,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 	@Override
 	public void visit(ClassementPage classementPage) {
 		FileWriter file = null;
+		String classmentComponentVue = classementPage.getName().replaceAll(" ", "")+"_component"+".vue";
 		try {
-			file = createFile("views/"+classementPage.getName().replaceAll(" ", "")+".vue");
+			file = createFile("views/"+classmentComponentVue);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -1,0 +1,5 @@
+function getDataTableau1(){
+        return  [{'Nom': 'est', 'Prenom': 'semper', 'Age': 'amet ', 'Age': 'at', 'Role': 'ante'},{'Nom': 'Praesent', 'Prenom': 'malesuada', 'Age': 'amet', 'Age': 'ipsum', 'Role': 'molestie '},{'Nom': 'at', 'Prenom': 'sit', 'Age': 'at', 'Age': 'purus', 'Role': 'rutrum'},{'Nom': 'vitae', 'Prenom': 'consectetur', 'Age': 'ut', 'Age': 'ipsum', 'Role': 'sem'},{'Nom': 'malesuada', 'Prenom': 'Etiam', 'Age': 'Etiam', 'Age': 'est', 'Role': 'est'},{'Nom': 'ipsum', 'Prenom': 'dolor', 'Age': 'feugiat', 'Age': 'ut', 'Role': 'mi'},{'Nom': 'est', 'Prenom': 'dolor', 'Age': 'sit', 'Age': 'ut', 'Role': 'eros '},{'Nom': 'Praesent', 'Prenom': 'dolor', 'Age': 'vitae', 'Age': 'bibendum', 'Role': 'sit'},{'Nom': 'erat ', 'Prenom': 'Etiam', 'Age': 'quis', 'Age': 'Donec', 'Role': 'purus'},{'Nom': 'Sed', 'Prenom': 'eget ', 'Age': 'at', 'Age': 'neque', 'Role': 'amet '},]
+}module.exports = {
+    getDataTableau1,
+}
