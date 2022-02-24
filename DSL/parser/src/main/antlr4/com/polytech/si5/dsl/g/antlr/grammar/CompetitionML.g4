@@ -23,7 +23,7 @@ columns:  column ('|' column)*  ;
 column : name=WORD;
 
 /* Filtre tableau*/
-filtres : 'filtres' columns_refs FILTRE_TYPE;
+filtres : 'filtres' columns_refs FILTRE_TYPE FILTRE_CHECKBOX_TYPE?;
 columns_refs: column_ref (',' column_ref)*;
 column_ref : name=WORD;
 /* Options tableau */
@@ -43,6 +43,7 @@ COLOR_HEXA: '#' ([0-9] | [A-F])*;
 LOGO: 'with logo';
 SORTABLE: 'triable';
 FILTRE_TYPE: 'unique';
+FILTRE_CHECKBOX_TYPE: 'radio' | 'switch' | 'checkbox';
 /*************
  ** Helpers **
  *************/

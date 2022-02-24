@@ -1,5 +1,0 @@
-function getData(){
-        return  [{'Equipe': 'sit', 'Prenom': 'at', 'Nom': 'consectetur', 'Nationalité': 'sit', 'Score': 'eros '},{'Equipe': 'sem', 'Prenom': 'sit', 'Nom': 'vitae', 'Nationalité': 'pharetra ', 'Score': 'fringilla '},{'Equipe': 'Nunc', 'Prenom': 'eros ', 'Nom': 'bibendum', 'Nationalité': 'elit ', 'Score': 'ante '},{'Equipe': 'at', 'Prenom': 'velit', 'Nom': 'amet', 'Nationalité': 'maximus', 'Score': 'commodo'},{'Equipe': 'sit', 'Prenom': 'velit', 'Nom': 'eget ', 'Nationalité': 'maximus', 'Score': 'malesuada'},{'Equipe': 'molestie', 'Prenom': 'malesuada', 'Nom': 'amet ', 'Nationalité': 'sit', 'Score': 'quis'},{'Equipe': 'sem', 'Prenom': 'pharetra ', 'Nom': 'nulla', 'Nationalité': 'sem', 'Score': 'dolor'},{'Equipe': 'ante ', 'Prenom': 'mollis', 'Nom': 'ante', 'Nationalité': 'Etiam', 'Score': 'Sed'},{'Equipe': 'erat ', 'Prenom': 'eros ', 'Nom': 'Lorem', 'Nationalité': 'vitae', 'Score': 'semper'},{'Equipe': 'mi', 'Prenom': 'Sed', 'Nom': 'Praesent', 'Nationalité': 'eget ', 'Score': 'mi'},]
-}module.exports = {
-    getData,
-}

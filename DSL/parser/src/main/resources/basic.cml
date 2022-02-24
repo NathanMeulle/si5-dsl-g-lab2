@@ -6,6 +6,6 @@ classement "classement"
     disposition padding 20 px
     tableau "helloworld" top 5 triable [ Equipe | Prenom | Nom | Nationalité | Score ]
         titre en gras
-        filtres Equipe, Nationalité unique
+        filtres Equipe, Nationalité unique switch
         champs Nom, Equipe en gras, #00008C
         champs Prenom en souligné, #AA0000

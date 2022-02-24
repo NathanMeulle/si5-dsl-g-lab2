@@ -212,6 +212,10 @@ public class ModelBuilder extends CompetitionMLBaseListener {
 
         for(CompetitionMLParser.FiltresContext filtresContext :ctx.filtres()){
             FiltreType filtreType = FiltreType.get(filtresContext.FILTRE_TYPE().getText());
+            if (filtresContext.FILTRE_CHECKBOX_TYPE()!=null) {
+                FiltreCheckboxType filtreCheckboxType = FiltreCheckboxType.get(filtresContext.FILTRE_CHECKBOX_TYPE().getText());
+                tableau.setFiltreCheckboxType(filtreCheckboxType);
+            }
 
             List<Champ> champsRefs = columnLists.get(filtresContext.columns_refs());
             for (Champ champ : champsRefs) {

@@ -18,6 +18,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 	private List<Page> pages;
 	private List<String> menuItems;
 	private final Path path = Paths.get("../output/src");
+	private List<Filtre> filtres = new ArrayList<>();
 
 
 	public ToWiring() {
@@ -152,7 +153,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 		context.put("pass", PASS.TWO);
 		String logo = "";
-//		String logo = app.has!=null?" :logoUrl=\""+app.getUrlLogo() +"\"\n":"";
 		if (app.isHaveLogo()){
 			logo = " :logoUrl=\"logoUrl\"\n";
 		}
@@ -233,6 +233,10 @@ public class ToWiring extends Visitor<StringBuffer> {
 			e.printStackTrace();
 		}
 
+		for (Filtre f: tableau.getFiltres()){
+			this.visit(f);
+		}
+
 		ToWiringTableau wt = new ToWiringTableau(tableau);
 		w(file, wt.generateHTML());
 
@@ -301,6 +305,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(Filtre filtre) {
+		this.filtres.add(filtre);
 
 	}
 

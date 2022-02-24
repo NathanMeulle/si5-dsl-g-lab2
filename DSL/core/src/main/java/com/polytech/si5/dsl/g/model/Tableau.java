@@ -14,6 +14,7 @@ public class Tableau extends DataDisplay implements Visitable {
     private int size;
     private List<Champ> champs;
     private List<Filtre> filtres;
+    private FiltreCheckboxType filtreCheckboxType;
     private final String htmlComponent = "<Tableau />";
     private int nbItemPerPage = 0;
     private boolean sortable = false;
