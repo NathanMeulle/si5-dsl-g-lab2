@@ -7,7 +7,7 @@
     <b-collapse id="nav-collapse" is-nav class="d-lg-block">
       <b-navbar-nav>
         <b-nav-item v-for="item in MenuItems" :key="item.message">
-          <b-nav-item @click="swapComponent(item.replaceAll(' ', ''))">{{item}}</b-nav-item>
+          <b-nav-item @click="swapComponent(item.replaceAll(' ', '')+'_component')">{{item}}</b-nav-item>
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
