@@ -142,9 +142,12 @@ public class ToWiringTableau {
     private String generateFields(){
         StringBuilder res = new StringBuilder();
         for (Champ champ : this.champs){
-            res.append("        {\n          key:'").append(champ.getName()).append("'\n");
+            res.append("        {\n          key:'").append(champ.getName()).append("',\n");
             if (champ.getStyle() != null && champ.getStyle().isBold()){
                 res.append("          class:\"font-weight-bold\"\n");
+            }
+            if (champ.isSortable()){
+                res.append("          sortable: true\n\n");
             }
             res.append("        },\n");
         }

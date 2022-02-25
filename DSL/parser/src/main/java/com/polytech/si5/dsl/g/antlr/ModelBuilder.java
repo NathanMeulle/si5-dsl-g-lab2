@@ -189,7 +189,6 @@ public class ModelBuilder extends CompetitionMLBaseListener {
     @Override public void enterTableau(CompetitionMLParser.TableauContext ctx) {
         Tableau tableau = new Tableau(ctx.name.getText());
         tableau.setSize(Integer.parseInt(ctx.max.getText()));
-        tableau.setSortable(ctx.sortable() != null);
         tables.put(ctx,tableau);
     }
 
@@ -212,6 +211,13 @@ public class ModelBuilder extends CompetitionMLBaseListener {
         for(CompetitionMLParser.ColumnContext columnsContext: ctx.tableau_def().columns().column()){
             Champ champ = fields.get(columnsContext);
             tableau.getChamps().add(champ);
+        }
+
+        if (ctx.sortables() != null) {
+            List<Champ> champsRefs = columnLists.get(ctx.sortables().columns_refs());
+            for (Champ champ : champsRefs) {
+                champ.setSortable(true);
+            }
         }
 
         for(CompetitionMLParser.FiltresContext filtresContext :ctx.filtres()){

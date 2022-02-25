@@ -16,9 +16,8 @@ disposition : 'disposition' padding;
 padding : 'padding' value=INTEGER 'px';
 
 /* Tableau */
-tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER pagination? sortable? tableau_def titre? filtres* champs*;
+tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER pagination? tableau_def titre? sortables? filtres* champs*;
 tableau_def: '[' columns ']';
-sortable: SORTABLE;
 columns:  column ('|' column)*  ;
 column : name=WORD;
 
@@ -26,6 +25,8 @@ column : name=WORD;
 filtres : 'filtres' columns_refs FILTRE_TYPE FILTRE_CHECKBOX_TYPE?;
 columns_refs: column_ref (',' column_ref)*;
 column_ref : name=WORD;
+/* Filtre tableau*/
+sortables : 'triable' columns_refs;
 /* Options tableau */
 champs: 'champs' columns_refs styles;
 styles: 'en' style (COMA style)*;
