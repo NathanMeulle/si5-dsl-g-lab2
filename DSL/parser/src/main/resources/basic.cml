@@ -4,7 +4,7 @@ discipline "triathlon" championnat
 classement "classement"
     titre en masqué
     disposition padding 20 px
-    tableau "helloworld" top 5 triable [ Equipe | Prenom | Nom | Nationalité | Score ]
+    tableau "helloworld" top 50 pagination 5 triable [ Equipe | Prenom | Nom | Nationalité | Score ]
         titre en gras
         filtres Equipe, Nationalité unique switch
         champs Nom, Equipe en gras, #00008C

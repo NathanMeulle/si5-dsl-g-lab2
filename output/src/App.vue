@@ -2,7 +2,7 @@
 	<div id="app">
     <Navbar      :NavbarTitle="'triathlon'"
       :MenuItems="['classement']"
-      :colorNavBar="'null'"
+      :colorNavBar="'#77B5FE'"
       @swapComponent="loadComponent"
     />
     <div class="container">
@@ -28,7 +28,7 @@ export default {
     {
         this.currentComponent = component
     }
-  }
+  },
 }
 
 </script>

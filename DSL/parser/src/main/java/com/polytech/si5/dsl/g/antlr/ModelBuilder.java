@@ -205,6 +205,10 @@ public class ModelBuilder extends CompetitionMLBaseListener {
             tableau.getTitre().consume(titleStyle);
         }
 
+        if(ctx.pagination() != null){
+            tableau.setNbItemPerPage(Integer.parseInt(ctx.pagination().nbItems.getText()));
+        }
+
         for(CompetitionMLParser.ColumnContext columnsContext: ctx.tableau_def().columns().column()){
             Champ champ = fields.get(columnsContext);
             tableau.getChamps().add(champ);

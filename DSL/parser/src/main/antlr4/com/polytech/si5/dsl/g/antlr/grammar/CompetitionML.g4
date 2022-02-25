@@ -16,7 +16,7 @@ disposition : 'disposition' padding;
 padding : 'padding' value=INTEGER 'px';
 
 /* Tableau */
-tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER sortable? tableau_def titre? filtres* champs*;
+tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER pagination? sortable? tableau_def titre? filtres* champs*;
 tableau_def: '[' columns ']';
 sortable: SORTABLE;
 columns:  column ('|' column)*  ;
@@ -30,6 +30,7 @@ column_ref : name=WORD;
 champs: 'champs' columns_refs styles;
 styles: 'en' style (COMA style)*;
 style: (style_text=STYLE_TEXT | color=COLOR_HEXA);
+pagination: 'pagination' nbItems=INTEGER;
 
 
 /*****************
