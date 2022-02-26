@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
     <Navbar      :NavbarTitle="'triathlon'"
-      :MenuItems="['classement']"
+      :MenuItems="['Classement', 'Score']"
       :colorNavBar="'#77B5FE'"
       @swapComponent="loadComponent"
     />
@@ -13,10 +13,11 @@
 <script>
 import Navbar from './components/Navbar.vue'
 import classement_component from './views/classement_component.vue'
+import score_component from './views/score_component.vue'
 export default {
   name: 'App',
   components: {
-    Navbar, classement_component
+    Navbar, classement_component, score_component
   },
   data() {
     return {
@@ -26,7 +27,7 @@ export default {
   methods: {
     loadComponent: function(component)
     {
-        this.currentComponent = component
+        this.currentComponent = component.toLowerCase()
     }
   },
 }

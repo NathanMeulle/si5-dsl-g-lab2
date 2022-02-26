@@ -1,8 +1,9 @@
 <template>
   <div>
-    <h4 class="text-left">helloworld</h4>
+    <h4 class="text-left">{{title}}</h4>
     <Filtre v-if="activateFiltre" 
-      :checkBoxStyle="'SWITCH'"      :options="options"
+      :checkBoxStyle="checkBoxStyle"      
+      :options="options"
       @updateFilterSelected="updateSelected"
     />
     <b-table striped hover id="classementTable" 
@@ -12,64 +13,44 @@
       :current-page="currentPage" 
       :filter="filter" 
       :filter-function="filterTable"
-      show-empty
     >
-    </b-table>  </div>
+    </b-table>
+    <b-pagination v-if="perPage>0"
+      v-model="currentPage"
+      :total-rows="rowNb"
+      :per-page="perPage"
+      aria-controls="classementTable"
+    ></b-pagination>
+  </div>
 </template>
 <script>
 import Filtre  from "./Filtre"
-var data_helloworld = require('../external/getData_helloworld');
   export default {
   components: {
     Filtre,
-  },  mounted() {
-    this.items =  data_helloworld.helloworld().slice(0, 50);
   },
+  props: {
+    perPage: Number,
+    items: Array,
+    fields: Array,
+    title: String,
+    filterTable: { type: Function },
+    activateFiltre: Boolean,
+    rowNb: Number,
+    options: Array,
+    selected: Array,
+    checkBoxStyle: String
+    },
     data() {
       return {
-        perPage: "50",
         currentPage: 1,
-        items: [],
-        fields: [
-        {
-          key:'Equipe'
-        },
-        {
-          key:'Prenom'
-        },
-        {
-          key:'Nom'
-        },
-        {
-          key:'Nationalité'
-        },
-        {
-          key:'Score'
-        },
-        ],
         filter: "_",
-        activateFiltre:true,
-        selected: [],
-        options: [
-          { text: 'Equipe', value: 'Equipe' }, 
-          { text: 'Nationalité', value: 'Nationalité' }],
       }
      },
-     computed: {
-       rows() {
-           return 50
-       }
-    },
      methods: {
-      filterTable(row) {
-        if (((this.selected.includes("Equipe")?row.Equipe==undefined:false) ||(this.selected.includes("Nationalité")?row.Nationalité==undefined:false) || false)) {
-          return false;
-        } else {
-          return true;
-        }
-      },
       updateSelected(value) {
-        this.selected = value
+        this.$emit("updateFilterSelected", value)
       }
-    },  }
+    },  
+  }
 </script>

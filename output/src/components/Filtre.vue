@@ -3,7 +3,7 @@
         
         <b-form-radio-group v-if="isRadio"
           id="checkbox-group-1"
-          v-model="selected"
+          v-model="selectedFilter"
           :options="options"
           :aria-describedby="ariaDescribedby"
           name="flavour-1"
@@ -11,8 +11,7 @@
           switches 
         ></b-form-radio-group>
     <b-form-checkbox-group v-else-if="isSwitch"
-        id="checkbox-group-2"
-        v-model="selected"
+        v-model="selectedFilter"
         :options="options"
         :aria-describedby="ariaDescribedby"
         name="flavour-1"
@@ -21,7 +20,7 @@
     ></b-form-checkbox-group>
     <b-form-checkbox-group v-else
           id="checkbox-group-3"
-          v-model="selected"
+          v-model="selectedFilter"
           :options="options"
           :aria-describedby="ariaDescribedby"
           name="flavour-1"
@@ -34,7 +33,7 @@
 <script>
 export default {
   name: 'Filtre',
-  props: ['options', 'checkBoxStyle'],
+  props: ['options', 'checkBoxStyle', 'selected'],
   computed: {
     isRadio: function () {
         this.initSelected()
@@ -44,22 +43,16 @@ export default {
         return this.checkBoxStyle=='SWITCH'
     }
   },
-
-  data() {
-      return {
-        selected: [],
-     }
-  },
   methods: {
     updateValue() {
-        this.$emit("updateFilterSelected", this.selected)
+        this.$emit("updateFilterSelected", this.selectedFilter)
     },
     initSelected() {
-        this.selected = []
+        this.selectedFilter = this.selected
     }
   },
 mounted() {
-    this.selected = []
+    this.selectedFilter = this.selected
   },
 }
 </script>

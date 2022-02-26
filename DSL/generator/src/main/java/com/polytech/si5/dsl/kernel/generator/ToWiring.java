@@ -3,6 +3,7 @@ package com.polytech.si5.dsl.kernel.generator;
 import com.polytech.si5.dsl.g.model.*;
 import com.polytech.si5.dsl.g.visitor.Visitor;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,7 +19,16 @@ public class ToWiring extends Visitor<StringBuffer> {
 	private List<Page> pages;
 	private List<String> menuItems;
 	private final Path path = Paths.get("../output/src");
-	private List<Filtre> filtres = new ArrayList<>();
+	private List<Filtre> filtres;
+	private String pageName;
+	private List<String> componentsTableau = new ArrayList<>();
+	private List<String> dataTableauImport = new ArrayList<>();
+	private List<String> dataTableauItems = new ArrayList<>();
+	private List<String> dataTableauSelected= new ArrayList<>();
+	private List<String> dataTableauOptions= new ArrayList<>();
+	private List<String> dataTableauFields= new ArrayList<>();
+	private List<String> methodsTableauFilter= new ArrayList<>();
+	private List<String> methodsTableauUpdateSelected= new ArrayList<>();
 
 
 	public ToWiring() {
@@ -63,11 +73,11 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	private void createExternalRessource(DataDisplay d){
 		String functionName = d.getDataSource();
-		Boolean isTableau = d.getHtmlComponent().contains("Tableau");
+		boolean isTableau = d.getHtmlComponent().contains("Tableau");
 		FileWriter file = null;
-		if (functionName == null) functionName = d.getName().replaceAll("\"","");
+		if (functionName == null) functionName = d.getName().replaceAll(" |\"","").toLowerCase();
 		try {
-			File testFile = new File(path + "/external/getData_" + functionName + ".js");
+			File testFile = new File(path + "/external/getData_" + functionName + "_" + pageName + ".js");
 			if (!testFile.exists()) {
 				file = new FileWriter(testFile);
 			} else {
@@ -146,7 +156,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 		pages = app.getPages();
 		if (pages != null && !pages.isEmpty()) {
 			menuItems = pages.stream().map(NamedElement::getName).collect(Collectors.toList());
-			Collections.reverse(menuItems);
 			for (Page page : app.getPages()){
 				page.accept(this);
 			}
@@ -174,7 +183,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"      <div :is=\"currentComponent\"></div>\n" +
 				"    </div>");
 
-		String menuImports = menuItems.stream().map(x -> "\nimport " + x.replaceAll(" ", "") + "_component" + " from './views/" + x.replaceAll(" ", "") + "_component.vue'" ).collect(Collectors.joining());
+		String menuImports = menuItems.stream().map(x -> "\nimport " + x.replaceAll(" ", "").toLowerCase() + "_component" + " from './views/" + x.replaceAll(" ", "").toLowerCase() + "_component.vue'" ).collect(Collectors.joining());
 		if (app.isHaveLogo()) {
 			menuImports+="\nvar logoUrlData = require('./external/getData_logoUrl');\n";
 			createExternalRessourceLogo();
@@ -189,7 +198,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"  components: {\n" +
 				"    Navbar, %s\n" +
 				"  },\n",
-				menuImports, menuItems.stream().map(x -> x.replaceAll(" ", "")+"_component").collect(Collectors.joining(", "))));
+				menuImports, menuItems.stream().map(x -> x.replaceAll(" ", "").toLowerCase()+"_component").collect(Collectors.joining(", "))));
 
 		w(file,  String.format("  data() {\n" +
 				"    return {\n" +
@@ -200,9 +209,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"  methods: {\n" +
 				"    loadComponent: function(component)\n" +
 				"    {\n" +
-				"        this.currentComponent = component\n" +
+				"        this.currentComponent = component.toLowerCase()\n" +
 				"    }\n" +
-		"  },", menuItems.get(0).replaceAll(" ", "")+"_component"));
+		"  },", menuItems.get(0).replaceAll(" ", "").toLowerCase()+"_component"));
 
 		if (app.isHaveLogo()){
 			w(file, String.format("\n  mounted() {\n" +
@@ -225,27 +234,104 @@ public class ToWiring extends Visitor<StringBuffer> {
 		}
 	}
 
-	@Override
-	public void visit(Tableau tableau) {
-		FileWriter file = null;
-		try {
-			file = createFile("components/Tableau.vue");
-		} catch (IOException e) {
-			e.printStackTrace();
+	private String generateFilterLogic(List<String> filtres, String identifier) {
+		StringBuilder res = new StringBuilder("(");
+		if (filtres.isEmpty()) res.append(String.format("(this.selected_%1$s.includes(\"\")?row==undefined:false))", identifier));
+		else {
+			for (String f : filtres){
+				res.append(String.format("(this.selected_%1$s.includes(\"%2$s\")?row.%2$s==undefined:false) ||", identifier, f));
+			}
+			res.append(" false)");
 		}
 
+		return res.toString();
+	}
+
+	private String generateFields(Tableau tableau){
+		StringBuilder res = new StringBuilder(" [\n");
+		for (Champ champ : tableau.getChamps()){
+			res.append("        {\n          key:'").append(champ.getName()).append("',\n");
+			if (champ.getStyle() != null && champ.getStyle().isBold()){
+				res.append("          class:\"font-weight-bold\"\n");
+			}
+			if (champ.isSortable()){
+				res.append("          sortable: true\n\n");
+			}
+			res.append("        },\n");
+		}
+		res.append("        ],\n");
+		return res.toString();
+	}
+
+
+	@Override
+	public void visit(Tableau tableau) {
+		createExternalRessource(tableau);
+		filtres = new ArrayList<>();
+		String identifier = tableau.getName().replaceAll(" |\"","") + "_" + pageName;
 		for (Filtre f: tableau.getFiltres()){
 			this.visit(f);
 		}
+		boolean activateFilter = this.filtres != null && !this.filtres.isEmpty();
 
-		ToWiringTableau wt = new ToWiringTableau(tableau);
-		w(file, wt.generateHTML());
+		componentsTableau.add(String.format(
+				"    <Tableau\n" +
+				"      :title=\"'%5$s'\"\n" +
+				"      :perPage=\"%2$d\"\n" +
+				"      :items=\"items_data_%1$s\"\n" +
+				"      :fields=\"fields_%1$s\"\n" +
+				"      :filterTable=\"filterMethod_%1$s\"\n" +
+				"      :activateFiltre=\"%3$s\"\n" +
+				"      :rowNb=\"%4$d\"\n" +
+				"      :options=\"options_%1$s\"\n" +
+				"      :checkBoxStyle=\"checkBoxStyle_%1$s\"\n" +
+				"      @updateFilterSelected=\"updateSelected_%1$s\"\n" +
+				"    />\n",
+				identifier,
+				tableau.getNbItemPerPage(),
+				activateFilter,
+				tableau.getSize(),
+				tableau.getName().replaceAll("\"","")
+				));
 
-		try {
-			file.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		dataTableauImport.add(String.format("var data_%1$s = require('../external/getData_%1$s');\n",
+				identifier));
+
+		dataTableauItems.add(String.format("    this.items_data_%1$s =  data_%1$s.%2$s().slice(0, %3$d);\n",
+				identifier,
+				tableau.getName().replaceAll(" |\"", ""),
+				tableau.getSize()));
+
+		dataTableauSelected.add(String.format(
+				"        selected_%1$s: [],\n" +
+				"        checkBoxStyle_%1$s: \"%2$s\",\n",
+				identifier,
+				tableau.getFiltreCheckboxType()==null?"":tableau.getFiltreCheckboxType().name()));
+
+		String optionsFilter = "[],";
+		if (activateFilter) {
+			optionsFilter = "[" + filtres.stream().map(x -> String.format("\n          { text: '%s', value: '%s' }", x.getChamp().getName(), x.getChamp().getName())).collect(Collectors.joining(", ")) + "],";
 		}
+		dataTableauOptions.add(String.format("        options_%s: %s\n", identifier, optionsFilter));
+
+		dataTableauFields.add(String.format("        fields_%s:%s", identifier, generateFields(tableau)));
+
+		methodsTableauFilter.add(String.format(
+				"       filterMethod_%1$s(row) {\n" +
+				"         if %2$s {\n" +
+				"          return false;\n" +
+				"        } else {\n" +
+				"          return true;\n" +
+				"        }\n" +
+				"       },",
+				identifier,
+				generateFilterLogic(tableau.getFiltres().stream().map(x->x.getChamp().getName()).collect(Collectors.toList()), identifier)));
+
+		methodsTableauUpdateSelected.add(String.format(
+				"     updateSelected_%1$s(value) {\n" +
+				"        this.selected_%1$s = value\n" +
+				"      },",
+				identifier));
 	}
 
 	@Override
@@ -256,42 +342,68 @@ public class ToWiring extends Visitor<StringBuffer> {
 	@Override
 	public void visit(ClassementPage classementPage) {
 		FileWriter file = null;
-		String classmentComponentVue = classementPage.getName().replaceAll(" ", "")+"_component"+".vue";
+		componentsTableau.clear();
+		dataTableauImport.clear();
+		dataTableauItems.clear();
+		dataTableauSelected.clear();
+		dataTableauOptions.clear();
+		dataTableauFields.clear();
+		methodsTableauFilter.clear();
+		methodsTableauUpdateSelected.clear();
+
+		pageName = classementPage.getName().replaceAll(" |\"","") ;
+
+		String classmentComponentVue = classementPage.getName().replaceAll(" ", "").toLowerCase()+"_component"+".vue";
 		try {
 			file = createFile("views/"+classmentComponentVue);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		List<DataDisplay> dataDisplays = classementPage.getDataDisplays();
-		StringBuilder dataDisplaysHtml = new StringBuilder();
 		if (dataDisplays != null){
 			for (DataDisplay d : dataDisplays){
-				dataDisplaysHtml.append(d.getHtmlComponent()).append("\n");
 				d.accept(this);
-				createExternalRessource(d);
 			}
 		}
-		boolean hasTableau = dataDisplaysHtml.toString().contains("Tableau");
-
-
 		w(file, String.format("<template>\n" +
-				"  <b-container>\n" +
-				"    <h3>%s</h3>\n" +
-				"    %s" +
-				"  </b-container>\n" +
-				"</template>", classementPage.getName(), dataDisplaysHtml));
-
-		w(file, String.format("<script>\n" +
-				(hasTableau? "import Tableau from '../components/Tableau.vue'\n":"") +
-				"export default {\n" +
-				"  name: 'Classement',\n" +
-				"  components: {\n" +
-				(hasTableau? "    Tableau\n":"") +
-				"  }\n" +
-				"}\n" +
-				"</script>", classementPage.getName().replaceAll(" ", "")));
-
-
+						"  <b-container>\n" +
+						"    <h3>%s</h3>\n" +
+						"%s\n" +
+						"  </b-container>\n" +
+						"</template>" + "\n<script>\n" +
+						"import Tableau from '../components/Tableau.vue'\n" +
+						"%s\n" +
+						"export default {\n" +
+						"  name: 'Classement',\n" +
+						"  components: {\n" +
+						"    Tableau\n" +
+						"  },\n" +
+						"  created: function () {\n" +
+						"%s\n" +
+						"  },\n" +
+						"   data() {\n" +
+						"      return {\n" +
+						"%s\n" +
+						"%s\n" +
+						"%s\n" +
+						"      }\n" +
+						"     },\n" +
+						"     methods: {\n" +
+						"%s\n" +
+						"%s\n" +
+						"     }\n" +
+						"}\n" +
+						"</script>"
+				,classementPage.getName(),
+				String.join("", componentsTableau),
+				String.join("", dataTableauImport),
+				String.join("", dataTableauItems),
+				String.join("", dataTableauSelected),
+				String.join("", dataTableauOptions),
+				String.join("", dataTableauFields),
+				String.join("", methodsTableauFilter),
+				String.join("", methodsTableauUpdateSelected)
+				));
 		try {
 			file.close();
 		} catch (IOException e) {
@@ -307,7 +419,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 	@Override
 	public void visit(Filtre filtre) {
 		this.filtres.add(filtre);
-
 	}
 
 	@Override

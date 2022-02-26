@@ -6,18 +6,18 @@ grammar CompetitionML;
  ******************/
 
 root           :   app discipline classements EOF;
-app            :   'app' color=COLOR_HEXA (logo=LOGO)*;
-discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE ;
+app            :   'app' color=COLOR_HEXA (logo=LOGO)?;
+discipline     :   'discipline' name=TITLE type=DISCIPLINE ;
 
 classements : classement*;
-classement : 'classement' name=IDENTIFIER titre? classement_options*? tableau?;
+classement : 'classement' name=TITLE titre? classement_options* tableau+;
 classement_options : (disposition | padding);
 titre: 'titre' styles;
 disposition : 'disposition' padding;
 padding : 'padding' value=INTEGER 'px';
 
 /* Tableau */
-tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER pagination? tableau_def titre? sortables? filtres* champs*;
+tableau: 'tableau' name=TITLE 'top' max=INTEGER pagination? tableau_def titre? sortables? filtres* champs*;
 tableau_def: '[' columns ']';
 columns:  column ('|' column)*  ;
 column : name=WORD;
@@ -38,7 +38,7 @@ pagination: 'pagination' nbItems=INTEGER;
 /*****************
  ** Lexer rules **
  *****************/
-
+TITLE : QUOTE ([a-zA-Z0-9 ])+ QUOTE;
 IDENTIFIER :  QUOTE WORD+ QUOTE ;
 DISCIPLINE :   'championnat' | 'tournoi';
 STYLE_TEXT: 'souligné' | 'gras' | 'masqué';

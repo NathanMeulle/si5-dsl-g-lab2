@@ -178,8 +178,10 @@ public class ModelBuilder extends CompetitionMLBaseListener {
             classementPage.getTitre().consume(titleStyle);
         }
         if (ctx.tableau()!=null){
-            Tableau tableau = tables.get(ctx.tableau());
-            classementPage.getDataDisplays().add(tableau);
+            for (CompetitionMLParser.TableauContext t : ctx.tableau()) {
+                Tableau tableau = tables.get(t);
+                classementPage.getDataDisplays().add(tableau);
+            }
         }
         pages.put(ctx,classementPage);
     }

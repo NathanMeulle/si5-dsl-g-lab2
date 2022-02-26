@@ -5,6 +5,7 @@ import com.polytech.si5.dsl.g.visitor.Visitor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 

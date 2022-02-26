@@ -2,6 +2,7 @@ package com.polytech.si5.dsl.g.visitor;
 
 import com.polytech.si5.dsl.g.model.*;
 
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 
