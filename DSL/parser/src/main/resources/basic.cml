@@ -10,3 +10,4 @@ classement "classement"
         filtres Equipe, Nationalité unique switch
         champs Nom, Equipe en gras, #00008C
         champs Prenom en souligné, #AA0000
+classement "score"

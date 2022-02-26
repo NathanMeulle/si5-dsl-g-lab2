@@ -173,11 +173,14 @@ public class ModelBuilder extends CompetitionMLBaseListener {
     @Override
     public void exitClassement(CompetitionMLParser.ClassementContext ctx) {
         ClassementPage classementPage = (ClassementPage) pages.get(ctx);
-        Style titleStyle = styles.get(ctx.titre().styles());
-        Tableau tableau = tables.get(ctx.tableau());
-
-        classementPage.getTitre().consume(titleStyle);
-        classementPage.getDataDisplays().add(tableau);
+        if (ctx.titre()!=null){
+            Style titleStyle = styles.get(ctx.titre().styles());
+            classementPage.getTitre().consume(titleStyle);
+        }
+        if (ctx.tableau()!=null){
+            Tableau tableau = tables.get(ctx.tableau());
+            classementPage.getDataDisplays().add(tableau);
+        }
         pages.put(ctx,classementPage);
     }
 

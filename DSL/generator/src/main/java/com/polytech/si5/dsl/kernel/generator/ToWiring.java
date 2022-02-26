@@ -146,6 +146,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		pages = app.getPages();
 		if (pages != null && !pages.isEmpty()) {
 			menuItems = pages.stream().map(NamedElement::getName).collect(Collectors.toList());
+			Collections.reverse(menuItems);
 			for (Page page : app.getPages()){
 				page.accept(this);
 			}

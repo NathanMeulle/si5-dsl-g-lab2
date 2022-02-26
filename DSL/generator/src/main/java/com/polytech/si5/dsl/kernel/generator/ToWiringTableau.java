@@ -31,7 +31,7 @@ public class ToWiringTableau {
     }
 
     public String getPagination(){
-        String pagination = String.format("    <b-pagination\n"+
+        String pagination = String.format("\n    <b-pagination\n"+
                 "      v-model=\"currentPage\"\n" +
                 "      :total-rows=\"rows\"\n" +
                 "      :per-page=\"perPage\"\n"+

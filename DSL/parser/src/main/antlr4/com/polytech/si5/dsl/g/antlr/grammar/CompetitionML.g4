@@ -5,11 +5,12 @@ grammar CompetitionML;
  ** Parser rules **
  ******************/
 
-root           :   app discipline classement EOF;
+root           :   app discipline classements EOF;
 app            :   'app' color=COLOR_HEXA (logo=LOGO)*;
 discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE ;
 
-classement : 'classement' name=IDENTIFIER titre? classement_options* tableau;
+classements : classement*;
+classement : 'classement' name=IDENTIFIER titre? classement_options*? tableau?;
 classement_options : (disposition | padding);
 titre: 'titre' styles;
 disposition : 'disposition' padding;
