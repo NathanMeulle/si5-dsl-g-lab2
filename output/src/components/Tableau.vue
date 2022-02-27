@@ -6,7 +6,54 @@
       :options="options"
       @updateFilterSelected="updateSelected"
     />
-    <b-table striped hover id="classementTable" 
+    <b-table v-if="detailEvent=='HOVER'" striped hover id="classementTable" 
+      :items="items" 
+      :fields="fields" 
+      :per-page="perPage"  
+      :current-page="currentPage" 
+      :filter="filter" 
+      :filter-function="filterTable"
+      @row-hovered="onRowHover"
+      @row-unhovered="onRowUnHover"
+    >
+     <template v-if="details != undefined && details.length>0" #row-details="row">
+        <b-card>
+          <b-row v-for="d in details" :key="d" class="mb-2">
+            <b-col sm="3" class="text-sm-right"><b>{{d}}</b></b-col>
+            <b-col>
+            <template v-for="(value, name) in row.item">
+              <div v-if="d==name" :key="name">{{ value }} </div>
+            </template>
+            </b-col>
+          </b-row>
+        </b-card>
+      </template>
+    </b-table>
+
+    <b-table v-else-if="detailEvent=='DOUBLE_CLICK'" striped hover id="classementTable" 
+      :items="items" 
+      :fields="fields" 
+      :per-page="perPage"  
+      :current-page="currentPage" 
+      :filter="filter" 
+      :filter-function="filterTable"
+      @row-dblclicked="onRowClicked"
+    >
+     <template v-if="details != undefined && details.length>0" #row-details="row">
+        <b-card>
+          <b-row v-for="d in details" :key="d" class="mb-2">
+            <b-col sm="3" class="text-sm-right"><b>{{d}}</b></b-col>
+            <b-col>
+            <template v-for="(value, name) in row.item">
+              <div v-if="d==name" :key="name">{{ value }} </div>
+            </template>
+            </b-col>
+          </b-row>
+        </b-card>
+      </template>
+    </b-table>
+
+    <b-table v-else striped hover id="classementTable" 
       :items="items" 
       :fields="fields" 
       :per-page="perPage"  
