@@ -9,4 +9,4 @@ mvn -f DSL/parser exec:java -Dexec.args="DSL/parser/src/main/resources/basic.cml
 npm install --prefix IDE/front
 npm install --prefix IDE/back
 
-#docker build -t dsl -f IDE/docker/Dockerfile .
+docker build -t dsl -f IDE/docker/Dockerfile .

@@ -29,7 +29,9 @@ router.post('/render', (req, res) => {
         json = session_manager.refreshSession(req.session.uuid)
         
         const code = req.body.code
-        Controller.render(req.session.uuid, code);
+        const render = Controller.render(req.session.uuid, code);
+        json.errors = render.errors
+        json.output = render.output
     }
     
     res.send(json)
