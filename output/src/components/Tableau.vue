@@ -19,7 +19,11 @@
         <b-card>
           <b-row v-for="d in details" :key="d" class="mb-2">
             <b-col sm="3" class="text-sm-right"><b>{{d}}</b></b-col>
-            <b-col>{{ row.item}}</b-col>
+            <b-col>
+            <template v-for="(value, name) in row.item">
+              <div v-if="d==name" :key="name">{{ value }} </div>
+            </template>
+            </b-col>
           </b-row>
         </b-card>
       </template>
