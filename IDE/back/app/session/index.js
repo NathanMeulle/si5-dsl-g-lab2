@@ -1,21 +1,30 @@
 const docker = require('../docker')
+const uuid_generator = require('uuid');
 
 const maxTime = 300000
 const sessions = {}
 
-function startSession(uuid){
+function startSession(session){
 
-    console.log(`Starting a new session for : ${uuid}`)
-    sessions[uuid] = setTimeout(()=>endingSession(uuid), maxTime)
+    if(session.uuid === undefined){
+        const uuid = uuid_generator.v1();
+        session.uuid = uuid
+        console.log(`Starting a new session for : ${uuid}`)
+        sessions[uuid] = setTimeout(()=>endingSession(uuid), maxTime)
 
-    const port = docker.start(uuid)
-    const code = docker.getCode(uuid)
-    const session_info = {session_time: maxTime, session_port: port, code: code, new_session: true}
-    return session_info
+        const port = docker.start(uuid)
+        const code = docker.getCode(uuid)
+        const session_info = {session_time: maxTime, session_port: port, code: code, new_session: true}
+        return session_info
+    }
+    else{
+        return session_manager.refreshSession(session)
+    }
 }
 
-function refreshSession(uuid){
+function refreshSession(session){
 
+    const uuid = session.uuid 
     console.log(`Refreshing session for : ${uuid}`)
     clearTimeout(sessions[uuid]);
     sessions[uuid] = setTimeout(()=>endingSession(uuid), maxTime)

@@ -20,7 +20,8 @@ app.use(session({
   secret: 'dsl-ide',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: session_manager.maxTime }
+  cookie: { secure: false, maxAge: session_manager.maxTime },
+  rolling: true
 }))
 
 
