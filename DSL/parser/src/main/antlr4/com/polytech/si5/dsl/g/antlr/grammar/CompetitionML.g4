@@ -19,8 +19,9 @@ padding : 'padding' value=INTEGER 'px';
 /* Tableau */
 tableau: 'tableau' name=TITLE 'top' max=INTEGER pagination? tableau_def titre? sortables? filtres* champs*;
 tableau_def: '[' columns ']';
-columns:  column ('|' column)*  ;
-column : name=WORD;
+columns:  column ('|' column )*  ;
+column : name=WORD | '('detail=WORD')';
+//detail : '(' name=WORD ')';
 
 /* Filtre tableau*/
 filtres : 'filtres' columns_refs FILTRE_TYPE FILTRE_CHECKBOX_TYPE?;
