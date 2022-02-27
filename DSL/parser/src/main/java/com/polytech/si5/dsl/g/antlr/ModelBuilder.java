@@ -123,10 +123,28 @@ public class ModelBuilder extends CompetitionMLBaseListener {
      */
     @Override
     public void enterColumn(CompetitionMLParser.ColumnContext ctx) {
-        Champ champ = new Champ(ctx.name.getText());
+        Champ champ;
+        if(ctx.name != null){
+            champ = new Champ(ctx.name.getText());
+        } else {
+            champ = new Champ(ctx.detail.getText());
+            champ.setInDetail(true);
+        }
         fields.put(ctx,champ);
         fieldRefs.put(champ.getName(),champ);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    /*@Override public void enterDetail(CompetitionMLParser.DetailContext ctx) {
+        Champ champ = new Champ(ctx.name.getText());
+        champ.setInDetail(true);
+        fields.put(ctx,champ);
+        fieldRefs.put(champ.getName(),champ);
+    }*/
 
     @Override
     public void enterColumns_refs(CompetitionMLParser.Columns_refsContext ctx) {

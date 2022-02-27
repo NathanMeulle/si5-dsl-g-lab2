@@ -250,19 +250,31 @@ public class ToWiring extends Visitor<StringBuffer> {
 	private String generateFields(Tableau tableau){
 		StringBuilder res = new StringBuilder(" [\n");
 		for (Champ champ : tableau.getChamps()){
-			res.append("        {\n          key:'").append(champ.getName()).append("',\n");
-			if (champ.getStyle() != null && champ.getStyle().isBold()){
-				res.append("          class:\"font-weight-bold\"\n");
+			if(!champ.isInDetail()) {
+				res.append("        {\n          key:'").append(champ.getName()).append("',\n");
+				if (champ.getStyle() != null && champ.getStyle().isBold()) {
+					res.append("          class:\"font-weight-bold\"\n");
+				}
+				if (champ.isSortable()) {
+					res.append("          sortable: true\n\n");
+				}
+				res.append("        },\n");
 			}
-			if (champ.isSortable()){
-				res.append("          sortable: true\n\n");
-			}
-			res.append("        },\n");
 		}
 		res.append("        ],\n");
 		return res.toString();
 	}
 
+
+	private List<String> champsInDetails(Tableau tableau){
+		List<String> detailsList = new ArrayList<>();
+		for(Champ champ : tableau.getChamps()){
+			if(champ.isInDetail()){
+				detailsList.add("\'"+champ.getName()+"\'");
+			}
+		}
+		return detailsList;
+	}
 
 	@Override
 	public void visit(Tableau tableau) {
@@ -286,12 +298,14 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"      :options=\"options_%1$s\"\n" +
 				"      :checkBoxStyle=\"checkBoxStyle_%1$s\"\n" +
 				"      @updateFilterSelected=\"updateSelected_%1$s\"\n" +
+				"      :details=\"%6$s\"\n" +
 				"    />\n",
 				identifier,
 				tableau.getNbItemPerPage(),
 				activateFilter,
 				tableau.getSize(),
-				tableau.getName().replaceAll("\"","")
+				tableau.getName().replaceAll("\"",""),
+				champsInDetails(tableau)
 				));
 
 		dataTableauImport.add(String.format("var data_%1$s = require('../external/getData_%1$s');\n",
