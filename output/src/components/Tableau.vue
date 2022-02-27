@@ -30,7 +30,7 @@
       </template>
     </b-table>
 
-    <b-table v-else-if="detailEvent=='DOUBLE_CLICK'" striped hover id="classementTable" 
+    <b-table v-else-if="detailEvent=='DOUBLECLICK'" striped hover id="classementTable" 
       :items="items" 
       :fields="fields" 
       :per-page="perPage"  
