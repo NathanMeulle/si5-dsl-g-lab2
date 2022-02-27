@@ -4,4 +4,5 @@ public class Constants {
 
     public  static final String UNDERLINE="souligné";
     public  static final String BOLD="gras";
+    public static final String HIDDEN = "masqué";
 }

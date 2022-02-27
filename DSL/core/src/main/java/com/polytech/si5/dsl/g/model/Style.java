@@ -11,6 +11,7 @@ public class Style implements Visitable {
     private String hexaColor="#FFFFFF";
     private boolean bold=false;
     private boolean underline=false;
+    private boolean hidden=false;
 
     @Override
     public void accept(Visitor visitor) {
@@ -30,5 +31,9 @@ public class Style implements Visitable {
     public void setUnderline(boolean underline) {
 
         this.underline = underline;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 }

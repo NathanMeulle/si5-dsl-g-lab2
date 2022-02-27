@@ -1,8 +1,18 @@
+app #77B5FE
 discipline "triathlon" championnat
 
-classement "classement"
+classement "Classement"
+    titre en masqué
     disposition padding 20 px
-    tableau "helloworld" top 5 [ Equipe | Prenom | Nom | Nationalité | Score ]
-    filtres Team | Nationalité unique
-    champs Nom | Equipe en gras, #00008C
-    champs Prenom en souligné, #AA0000
+    tableau "Classement Hommes" top 50 pagination 5 [ Equipe | Prenom | (Nom) | Nationalité | (Score) ]
+        titre en gras
+        triable Prenom, Score
+        filtres Equipe, Nationalité unique radio
+        champs Nom, Equipe en gras, #00008C
+        champs Prenom en souligné, #AA0000
+    tableau "Classement Femmes" top 40 pagination 10 [ Equipe | (Prenom) | Nom | Nationalité | Score ]
+        filtres Score unique switch
+        événement doubleClick
+
+classement "Score"
+    tableau "Top 10" top 10  [ (Prenom) | Nom | Nage | Velo | Course ] événement hover

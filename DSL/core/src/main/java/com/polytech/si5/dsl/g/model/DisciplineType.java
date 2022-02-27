@@ -7,7 +7,7 @@ public enum DisciplineType {
 
     public static DisciplineType get(String name) {
         for (DisciplineType current :DisciplineType.values()) {
-            if (current.name().equals(name)) return current;
+            if (current.name().equals(name.toUpperCase())) return current;
         }
         return null;
     }

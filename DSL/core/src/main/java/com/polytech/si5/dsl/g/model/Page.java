@@ -7,7 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class Page extends NamedElement implements Visitable, DispositionConsumer, StyleConsumer {
+    private Titre titre;
+
     public Page(String name) {
         super(name);
+        titre = new Titre(name);
     }
 }

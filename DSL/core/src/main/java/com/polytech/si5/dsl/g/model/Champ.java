@@ -11,6 +11,10 @@ public class Champ extends NamedElement implements Visitable, StyleConsumer {
 
     private boolean hide;
     private boolean inDetail;
+    private Style style;
+    private boolean sortable = false;
+
+
     public Champ(String name) {
         super(name);
         this.hide = false;
@@ -30,7 +34,7 @@ public class Champ extends NamedElement implements Visitable, StyleConsumer {
 
     @Override
     public void consume(Style style) {
-
+        this.style = style;
     }
 
     @Override
