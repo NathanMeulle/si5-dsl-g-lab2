@@ -134,17 +134,6 @@ public class ModelBuilder extends CompetitionMLBaseListener {
         fieldRefs.put(champ.getName(),champ);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    /*@Override public void enterDetail(CompetitionMLParser.DetailContext ctx) {
-        Champ champ = new Champ(ctx.name.getText());
-        champ.setInDetail(true);
-        fields.put(ctx,champ);
-        fieldRefs.put(champ.getName(),champ);
-    }*/
 
     @Override
     public void enterColumns_refs(CompetitionMLParser.Columns_refsContext ctx) {
@@ -229,6 +218,10 @@ public class ModelBuilder extends CompetitionMLBaseListener {
 
         if(ctx.pagination() != null){
             tableau.setNbItemPerPage(Integer.parseInt(ctx.pagination().nbItems.getText()));
+        }
+
+        if(ctx.detailEvent() != null){
+            tableau.setActionDetailsType(ActionDetailsType.get(ctx.detailEvent().name.getText()));
         }
 
         for(CompetitionMLParser.ColumnContext columnsContext: ctx.tableau_def().columns().column()){

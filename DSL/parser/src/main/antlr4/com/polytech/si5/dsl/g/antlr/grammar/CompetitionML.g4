@@ -17,11 +17,11 @@ disposition : 'disposition' padding;
 padding : 'padding' value=INTEGER 'px';
 
 /* Tableau */
-tableau: 'tableau' name=TITLE 'top' max=INTEGER pagination? tableau_def titre? sortables? filtres* champs*;
+tableau: 'tableau' name=TITLE 'top' max=INTEGER pagination? tableau_def titre? sortables? filtres* champs* detailEvent?;
 tableau_def: '[' columns ']';
 columns:  column ('|' column )*  ;
 column : name=WORD | '('detail=WORD')';
-//detail : '(' name=WORD ')';
+detailEvent : 'événement' name=WORD;
 
 /* Filtre tableau*/
 filtres : 'filtres' columns_refs FILTRE_TYPE FILTRE_CHECKBOX_TYPE?;

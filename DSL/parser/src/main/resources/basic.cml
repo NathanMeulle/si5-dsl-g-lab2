@@ -10,8 +10,9 @@ classement "Classement"
         filtres Equipe, Nationalité unique radio
         champs Nom, Equipe en gras, #00008C
         champs Prenom en souligné, #AA0000
-    tableau "Classement Femmes" top 40 pagination 10 [ Equipe | Prenom | Nom | Nationalité | Score ]
+    tableau "Classement Femmes" top 40 pagination 10 [ Equipe | (Prenom) | Nom | Nationalité | Score ]
         filtres Score unique switch
+        événement doubleClick
 
 classement "Score"
-    tableau "Top 10" top 10  [ Prenom | Nom | Nage | Velo | Course ]
+    tableau "Top 10" top 10  [ (Prenom) | Nom | Nage | Velo | Course ] événement hover

@@ -299,13 +299,15 @@ public class ToWiring extends Visitor<StringBuffer> {
 				"      :checkBoxStyle=\"checkBoxStyle_%1$s\"\n" +
 				"      @updateFilterSelected=\"updateSelected_%1$s\"\n" +
 				"      :details=\"%6$s\"\n" +
+				"      :detailEvent=\"'%7$s'\"\n" +
 				"    />\n",
 				identifier,
 				tableau.getNbItemPerPage(),
 				activateFilter,
 				tableau.getSize(),
 				tableau.getName().replaceAll("\"",""),
-				champsInDetails(tableau)
+				champsInDetails(tableau),
+				tableau.getActionDetailsType()
 				));
 
 		dataTableauImport.add(String.format("var data_%1$s = require('../external/getData_%1$s');\n",
