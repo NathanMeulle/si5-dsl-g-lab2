@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
-    <MonacoEditor id="monaco"  v-model="code" :options="options"/>
-    <v-btn @click="render" id="render" elevation="2">
+    <MonacoEditor id="monaco" v-model="editorCode" :options="options" ref="editor"/>
+    <v-btn @click="render" id="render" elevation="2" :loading="loading">
       Render
     </v-btn>
   </div>
@@ -11,22 +11,50 @@
 import MonacoEditor from 'vue-monaco'
 
 export default {
+
+  props:['code', 'syntax_error'],
+  watch: {
+    code(n){
+      this.editorCode = n;
+    },
+    syntax_error(n){
+      const monaco = this.$refs.editor.monaco
+      let model = monaco.editor.getModels()[0]
+      monaco.editor.setModelMarkers(model,"owner",n)
+      this.loading = false
+    }
+  },
   components: {
     MonacoEditor
   },
 
   data() {
     return {
-      code: '',
+      editorCode: '',
       options:{
+<<<<<<< Updated upstream
         theme: 'vs'
       }
+=======
+        theme: 'vs',
+        automaticLayout: true,
+        minimap: {
+          enabled: false
+        }
+      },
+      loading: true
+>>>>>>> Stashed changes
     }
   },
 
   methods: {
     render(){
+<<<<<<< Updated upstream
       console.log(this.code)
+=======
+      this.loading = true
+      this.$emit('render', this.editorCode)
+>>>>>>> Stashed changes
     }
   }
 }

@@ -4,9 +4,22 @@ const Controller = require('../controller');
 
 
 router.post('/render', (req, res) => {
-    const code = req.body.code
-    Controller.render(code);
-    res.sendStatus(200);
+
+
+    var json
+    if(req.session.uuid === undefined){
+        console.log('session expired')
+        json = {error: 'session expired'}
+    }
+    else{        
+        const code = req.body.code
+        const render = Controller.render(req.session.uuid, code);
+        json = session_manager.refreshSession(req.session)
+        json.errors = render.errors
+        json.output = render.output
+    }
+    
+    res.send(json)
 });
 
 module.exports = router
