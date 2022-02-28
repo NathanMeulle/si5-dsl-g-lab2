@@ -16,11 +16,10 @@ router.post('/render', (req, res) => {
         console.log('session expired')
         json = {error: 'session expired'}
     }
-    else{
-        json = session_manager.refreshSession(req.session)
-        
+    else{        
         const code = req.body.code
         const render = Controller.render(req.session.uuid, code);
+        json = session_manager.refreshSession(req.session)
         json.errors = render.errors
         json.output = render.output
     }

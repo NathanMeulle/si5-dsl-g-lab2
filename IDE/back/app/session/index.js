@@ -14,11 +14,11 @@ function startSession(session){
 
         const port = docker.start(uuid)
         const code = docker.getCode(uuid)
-        const session_info = {session_time: maxTime, session_port: port, code: code, new_session: true}
+        const session_info = {session_time: maxTime, session_port: port, code: code, new_session: true, uuid: uuid}
         return session_info
     }
     else{
-        return session_manager.refreshSession(session)
+        return refreshSession(session)
     }
 }
 
@@ -31,7 +31,7 @@ function refreshSession(session){
 
     const port = docker.dockers[uuid]
     const code = docker.getCode(uuid)
-    const session_info = {session_time: maxTime, session_port: port, code: code, new_session: false}
+    const session_info = {session_time: maxTime, session_port: port, code: code, new_session: false, uuid: uuid}
     return session_info
 }
 
