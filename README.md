@@ -50,5 +50,5 @@ Si l'application n'est pas lancée en local, adapter les fichiers [IDE/front/.en
 
 ### Avec IDE
 
-Exécution du back: ```cd IDE/back && npm start```
-Exécution du front: ```cd IDE/front && npm start```
+Exécutez le back ```cd IDE/back && npm start```  puis    
+le front: ```cd IDE/front && npm start```
