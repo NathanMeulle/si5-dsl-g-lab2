@@ -50,14 +50,19 @@ public class ModelBuilder extends CompetitionMLBaseListener {
     @Override
     public void enterApp(CompetitionMLParser.AppContext ctx) {
         theApp = new App("App");
-        if(ctx.color !=null ){
-            String color = ctx.color.getText();
-            if(ColorValidator.isHexa(color)){
-                theApp.setColorNavBar(color);
+        if(ctx.styles() !=null ){
+            for(CompetitionMLParser.StyleContext styleContext : ctx.styles().style()){
+                if(styleContext.color!=null){
+                    if(ColorValidator.isHexa(styleContext.color.getText())){
+                        theApp.setColorNavBar(styleContext.color.getText());
+                    }
+                }
             }
         }
-        if(ctx.logo!=null){
-            theApp.setHaveLogo(true);
+        if(ctx.logo()!=null){
+            if(Constants.INCLUDE.equals(ctx.logo().display.getText())){
+                theApp.setHaveLogo(true);
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 import com.polytech.si5.dsl.g.antlr.ModelBuilder;
 import com.polytech.si5.dsl.g.antlr.StopErrorListener;
+import com.polytech.si5.dsl.g.antlr.SyntaxErrorListener;
+import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLBaseListener;
 import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLLexer;
 import com.polytech.si5.dsl.g.antlr.grammar.CompetitionMLParser;
 import com.polytech.si5.dsl.g.model.App;
@@ -18,11 +20,12 @@ public class Main {
 
     public static void main (String[] args) throws Exception {
         System.out.println("\n\nRunning the ANTLR compiler for CompetitionML");
-
         CharStream stream = getCharStream(args);
-        App theApp = buildModel(stream);
-        exportToCode(theApp);
-
+        if(checkSyntax(stream) == 0){
+            stream = getCharStream(args);
+            App theApp = buildModel(stream);
+            exportToCode(theApp);
+        }
     }
 
     private static CharStream getCharStream(String[] args) throws IOException {
@@ -54,6 +57,26 @@ public class Main {
         Visitor codeGenerator = new ToWiring();
         theApp.accept(codeGenerator);
         System.out.println(codeGenerator.getResult());
+    }
+
+    private static int checkSyntax(CharStream stream){
+
+        SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
+
+        CompetitionMLLexer lexer   = new CompetitionMLLexer(stream);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(syntaxErrorListener);
+
+        CompetitionMLParser parser  = new CompetitionMLParser(new CommonTokenStream(lexer));
+        parser.removeErrorListeners();
+        parser.addErrorListener(syntaxErrorListener);
+
+        ParseTreeWalker   walker  = new ParseTreeWalker();
+        CompetitionMLBaseListener listener = new CompetitionMLBaseListener();
+
+        walker.walk(listener, parser.root()); // parser.root() is the entry point of the grammar
+        syntaxErrorListener.printErrors();
+        return syntaxErrorListener.nbError;
     }
 
 }

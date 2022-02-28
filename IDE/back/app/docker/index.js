@@ -27,7 +27,7 @@ function updateCode(uuid, arg){
     else {
         execSync(`docker cp ${uuid}.cml ${uuid}:/app/parser/src/main/resources/basic.cml`)
         execSync(`rm ${uuid}.cml`)
-        execSync(`docker exec ${uuid} ./run.sh`)
+        return execSync(`docker exec ${uuid} ./run.sh`).toString()
     }
 }
 

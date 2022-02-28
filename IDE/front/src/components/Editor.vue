@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
-    <MonacoEditor id="monaco" v-model="code" :options="options"/>
-    <v-btn @click="render" id="render" elevation="2">
+    <MonacoEditor id="monaco" v-model="editorCode" :options="options" ref="editor"/>
+    <v-btn @click="render" id="render" elevation="2" :loading="loading">
       Render
     </v-btn>
   </div>
@@ -9,13 +9,19 @@
 
 <script>
 import MonacoEditor from 'vue-monaco'
-import axios from 'axios'
 
 export default {
-  props:['init_code'],
+
+  props:['code', 'syntax_error'],
   watch: {
-    init_code(n){
-      this.code = n;
+    code(n){
+      this.editorCode = n;
+    },
+    syntax_error(n){
+      const monaco = this.$refs.editor.monaco
+      let model = monaco.editor.getModels()[0]
+      monaco.editor.setModelMarkers(model,"owner",n)
+      this.loading = false
     }
   },
   components: {
@@ -24,20 +30,22 @@ export default {
 
   data() {
     return {
-      code: '',
+      editorCode: '',
       options:{
         theme: 'vs',
         automaticLayout: true,
         minimap: {
           enabled: false
         }
-      }
+      },
+      loading: true
     }
   },
 
   methods: {
     render(){
-      axios.post(`http://${process.env.VUE_APP_BACK_BASE_API}/render`, {code:this.code});
+      this.loading = true
+      this.$emit('render', this.editorCode)
     }
   }
 }
