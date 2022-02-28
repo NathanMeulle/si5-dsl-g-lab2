@@ -31,5 +31,7 @@ RUN npm install --prefix ./output/
 # copie les fichiers et dossiers du projet dans le dossier de travail (par exemple : le dossier 'app')
 COPY output/src ./output/src/
 
+RUN ./run.sh
+
 EXPOSE 8080
 CMD [ "npm", "run", "serve", "--prefix", "./output" ]

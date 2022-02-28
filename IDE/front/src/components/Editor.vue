@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
-    <MonacoEditor id="monaco" v-model="code" :options="options"/>
-    <v-btn @click="render" id="render" elevation="2">
+    <MonacoEditor id="monaco" v-model="code" :options="options" ref="editor"/>
+    <v-btn @click="render" id="render" elevation="2" :loading="loading">
       Render
     </v-btn>
   </div>
@@ -31,13 +31,40 @@ export default {
         minimap: {
           enabled: false
         }
-      }
+      },
+      loading: false
     }
   },
 
   methods: {
     render(){
-      axios.post(`http://${process.env.VUE_APP_BACK_BASE_API}/render`, {code:this.code});
+      this.loading = true
+      axios.post(`http://${process.env.VUE_APP_BACK_BASE_API}/render`, {code:this.code}).then((response) => {
+        console.log(response.data)
+        const monaco = this.$refs.editor.monaco
+
+        console.log(response.data.output)
+        if(response.data.errors === undefined) return
+
+        let monacoErrors = [];
+        for (let e of response.data.errors) {
+          let infos = e.information.replace('[','').replace(']','').replaceAll('\'', '').split(',')
+          console.log(infos)
+          monacoErrors.push({
+            startLineNumber: parseInt(infos[3].split(':')[0]),
+            startColumn: parseInt(infos[3].split(':')[1]) + 1,
+            endLineNumber: parseInt(infos[3].split(':')[0]),
+            endColumn: parseInt(infos[3].split(':')[1]) + infos[1].split('=')[1].length + 1,
+            message: e.message,
+            severity: monaco.MarkerSeverity.Error
+          });
+        }
+        console.log(monacoErrors)
+        let model = monaco.editor.getModels()[0]
+        monaco.editor.setModelMarkers(model,"owner",monacoErrors)
+        this.loading = false
+      });
+      
     }
   }
 }
