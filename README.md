@@ -36,19 +36,19 @@ Si l'application n'est pas lancée en local, adapter les fichiers [IDE/front/.en
 
 ### Sans IDE
 
-```./build.sh```
+Exécutez le script ```./build.sh```
 
 ### Avec IDE
 
-```./build_ide.sh```
+Exécutez le script ```./build_ide.sh```
 
 ## Exécution
 
 ### Sans IDE
 
-```mvn -f DSL/parser exec:java -Dexec.args="DSL/parser/src/main/resources/basic.cml"```
+Exécutez la commande ```mvn -f DSL/parser exec:java -Dexec.args="DSL/parser/src/main/resources/basic.cml"```
 
 ### Avec IDE
 
-Exécutez le back ```cd IDE/back && npm start```  puis    
-le front: ```cd IDE/front && npm start```
+Exécutez le script pour lancer le back ```cd IDE/back && npm start```  puis    
+le front ```cd IDE/front && npm start```
