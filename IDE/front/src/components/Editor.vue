@@ -32,10 +32,6 @@ export default {
     return {
       editorCode: '',
       options:{
-<<<<<<< Updated upstream
-        theme: 'vs'
-      }
-=======
         theme: 'vs',
         automaticLayout: true,
         minimap: {
@@ -43,18 +39,13 @@ export default {
         }
       },
       loading: true
->>>>>>> Stashed changes
     }
   },
 
   methods: {
     render(){
-<<<<<<< Updated upstream
-      console.log(this.code)
-=======
       this.loading = true
       this.$emit('render', this.editorCode)
->>>>>>> Stashed changes
     }
   }
 }
@@ -64,15 +55,13 @@ export default {
 #monaco {
   width: 100%;
   height: 100%;
-  resize: vertical;
-  border: solid 1px black;
 }
 .editor {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  height: 100%;
 }
 #render {
   margin: 5px;

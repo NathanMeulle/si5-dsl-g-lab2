@@ -5,34 +5,50 @@ grammar CompetitionML;
  ** Parser rules **
  ******************/
 
-root            :   discipline classement EOF;
-discipline     :   'discipline' name=IDENTIFIER type=DISCIPLINE;
+root           :   app discipline classements EOF;
+app            :   'app' logo 'et' styles;
+logo           :    display=DISPLAY 'logo' ;
+discipline     :   'discipline' name=TITLE type=DISCIPLINE ;
 
-classement : 'classement' name=IDENTIFIER declaration;
-declaration : (disposition | tableau) (disposition | tableau);
+classements : classement*;
+classement : 'classement' name=TITLE titre? classement_options* tableau+;
+classement_options : (disposition | padding);
+titre: 'titre' styles;
 disposition : 'disposition' padding;
 padding : 'padding' value=INTEGER 'px';
 
 /* Tableau */
-tableau: 'tableau' name=IDENTIFIER 'top' max=INTEGER tableau_def filtres* champs*;
+tableau: 'tableau' name=TITLE 'top' max=INTEGER pagination? tableau_def titre? sortables? filtres* champs* detailEvent?;
 tableau_def: '[' columns ']';
-columns:  column ('|' column)*  ;
-column : name=WORD;
+columns:  column ('|' column )*  ;
+column : name=WORD | '('detail=WORD')';
+detailEvent : 'événement' name=WORD;
 
 /* Filtre tableau*/
-filtres : 'filtres' columns type=WORD;
-champs: 'champs' columns 'en' style (COMA style)*;
+filtres : 'filtres' columns_refs FILTRE_TYPE FILTRE_CHECKBOX_TYPE?;
+columns_refs: column_ref (',' column_ref)*;
+column_ref : name=WORD;
+/* Filtre tableau*/
+sortables : 'triable' columns_refs;
+/* Options tableau */
+champs: 'champs' columns_refs styles;
+styles: 'en' style (COMA style)*;
 style: (style_text=STYLE_TEXT | color=COLOR_HEXA);
+pagination: 'pagination' nbItems=INTEGER;
 
 
 /*****************
  ** Lexer rules **
  *****************/
-
+TITLE : QUOTE ([a-zA-Z0-9 ])+ QUOTE;
 IDENTIFIER :  QUOTE WORD+ QUOTE ;
 DISCIPLINE :   'championnat' | 'tournoi';
-STYLE_TEXT: 'souligné' | 'gras';
+STYLE_TEXT: 'souligné' | 'gras' | 'masqué';
 COLOR_HEXA: '#' ([0-9] | [A-F])*;
+DISPLAY:  'avec' | 'sans';
+SORTABLE: 'triable';
+FILTRE_TYPE: 'unique';
+FILTRE_CHECKBOX_TYPE: 'radio' | 'switch' | 'checkbox';
 /*************
  ** Helpers **
  *************/

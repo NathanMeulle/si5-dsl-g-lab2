@@ -1,10 +1,15 @@
 const { Router } = require('express');
 const router = new Router();
 const Controller = require('../controller');
+const session_manager = require('../session')
 
+router.post('/login', (req, res) => {
+
+    var json = session_manager.startSession(req.session)
+    res.send(json)
+})
 
 router.post('/render', (req, res) => {
-
 
     var json
     if(req.session.uuid === undefined){

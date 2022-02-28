@@ -1,5 +1,4 @@
 <template>
-
   <div id="grid-container">
     <Editor class="grid-item" :code="code" :syntax_error="syntax_error" @render="render($event)"/>
     <Preview class="grid-item"/>
@@ -104,8 +103,18 @@ html, body {
   width: 100%;
   height: 100%;
 }
-#editor {
-  height: 50%;
-  width: 50%;
+#grid-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+  
+}
+
+.grid-item {
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
 }
 </style>
